@@ -20,7 +20,28 @@ class GradeTracker:
     # End: Record the grade for students
 
     # Start: Summarize the grades by courses
+    def course_statistics(course_ids):
+    """[Calculates the statistics summary for specified courses, including mean, median and quantiles]
+    Args:
+        course_id (list): [A list includes course IDs for which the statistics summary are calculated]. 
+    Returns:
+        [pandas.DataFrame]: [a dataframe containing the statistics summary for specified courses, each row contains one course]
+    """
+    return course_statistics_df
 
+    def course_ranker(method="mean", descending=True):
+    """[Calculate students' course grades to rank courses in descending order by specified method]
+    Args:
+        method (string): [The method applied to rank the courses. The default option is mean].
+        Possible Options: "mean", "median", "75-quantile". Defaults to mean.
+        
+        descending(bool): [a boolean value to decide if the rank should be in ascending or descending order.
+            The default option is decending order]. Defaults to True.
+    Returns:
+        [pandas.DataFrame]: [a dataframe containing the rank for all courses]
+    """
+    return course_ranker_df
+    
     # End: Summarize the grades by courses
 
     # Start: Summarise the grades by students
