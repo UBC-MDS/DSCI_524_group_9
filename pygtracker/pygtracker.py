@@ -1,8 +1,9 @@
 # Author: Javairia, Jianru, Yanhua and Vu
 
-class GradeTracker():
-    """[To be completed: Docstring for the class]
-    """
+
+class GradeTracker:
+    """[To be completed: Docstring for the class]"""
+
     courses = None
     grades = None
 
@@ -23,6 +24,27 @@ class GradeTracker():
     # End: Summarize the grades by courses
 
     # Start: Summarise the grades by students
+    def rank_students(course_id="all", n=10, descending=True):
+        """Calculates the average grade for a specified number of students
+        and ranks them in ascending/descending order for a specific course or
+        for the entire program completed thus far.
+
+        Parameters
+        ----------
+        course_id : int or str, default "all"
+            The course id for which the ranking is calculated for
+            by student. Default will provide the ranking for the entire program completed thus far
+        n : int, default 10
+            The number of students to rank
+        descending : bool, default True
+            A boolean value to decide if the rank should be in descending or ascending order, by default it is descending order
+
+        Returns
+        -------
+        DataFrame
+            A dataframe containing the rank of students by average grade. Row index is student id, and Column Index is the rank.
+        """
+        return None
 
     # End: Summarise the grades by students
 
