@@ -29,7 +29,10 @@ The official documentation is hosted on Read the Docs: https://pygtracker.readth
 
 ## Contributors
 
-We welcome and recognize all contributions. You can see a list of current contributors in the [contributors tab](https://github.com/jianructose/pygtracker/graphs/contributors).
+- Javairia Raza
+- Jianru Deng
+- Tran Doan Khanh Vu
+- Yanhua Chen
 
 ### Credits
 
