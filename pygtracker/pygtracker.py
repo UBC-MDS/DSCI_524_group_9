@@ -82,7 +82,7 @@ class GradeTracker:
         """
         return None
 
-    def rank_course(self, method="mean", descending=True):
+    def rank_courses(self, method="mean", descending=True):
         """
         Calculate students' course grades to rank courses in ascending/descending order by a specified method.
 
