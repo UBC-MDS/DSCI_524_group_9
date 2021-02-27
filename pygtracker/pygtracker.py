@@ -54,41 +54,40 @@ class GradeTracker:
     """
     return None
 
-  def course_statistics(self, course_ids):
+  def generate_course_statistics(self, course_ids):
     """
-    Calculates the statistics summary for specified courses, including mean, median and quantiles
+    Calculate the statistics summary for specified courses, including mean, median and quantiles
         
     Parameters
     ----------
     course_id: list
-        A list includes course IDs for which the statistics summary are calculated]. 
+        A list includes course IDs for which the statistics summary are calculated. 
     
     Returns
     ----------
     DataFrame
-        A dataframe containing the statistics summary for specified courses, each row contains one course
+        A dataframe containing the statistics summary for specified courses. 
+        Row index is course id. Each row will include mean, 1st-quantile, median, 3rd-quantile for the specified course.
     """
     return course_statistics_df
 
 
-  def course_ranker(self, method="mean", descending=True):
+  def rank_course(self, method="mean", descending=True):
     """
     Calculate students' course grades to rank courses in descending order by specified method
     
     Parameters
     ----------
-    method: string, default "mean"
+    method: str, default "mean"
         The method applied to rank the courses. The default option is mean
-        Possible Options: "mean", "median", "75-quantile"
-    
-    descending: boolean, default True
-        To decide if the rank should be in ascending or descending order.
-        The default option is decending order
+        Possible Options: "mean", "1st-quantile", "median", "3rd-quantile"
+    descending: bool, default True
+        A boolean value to decide if the rank should be in descending or ascending order, by default it is descending order
     
     Returns
     -------
     DataFrame
-        A dataframe containing the rank for all courses
+        A dataframe containing the ranking for all courses. 
     """
     return course_ranker_df
     
