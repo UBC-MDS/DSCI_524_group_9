@@ -33,7 +33,7 @@ class GradeTracker:
     # Start: Record the grade for students
     def record_grades(dataframe):
       """
-      Record a grade for a student for specific course and assessment
+      Record grades for students for specific course and assessment
 
       Parameters
       ----------
