@@ -5,6 +5,22 @@
 ## Package Overview
 `pygtracker` is a Python package that allows UBC lecturers to record, analyze and adjust grades for students in a particular program. Users can record grades from each course, generate a summary report to determine which class is more challenging than the rest, or identify students who may need help. Finally, the package can suggest ways to adjust the grades for students to ensure the average grade matches a predefined benchmark. It contains five functions: `register_courses`, `record_grades`, `summarize_courses`, `rank_students` and `suggest_grade_adjustment`.
 
+The main components of this package are:
+
+- Register the courses
+  - Read/store the courses information as a dataframe
+- Record the grade for students
+  - Read/store the students grade for each assessment as a data frame
+- Summarize the grades by course
+  - Provide summary statistics on the courses 
+  - Provide the ranking of courses based on courses' average grade
+- Summarise the grades by students
+  - Provide the ranking of students' average grades for the course selected (or the whole program).
+- Suggest grade adjustment
+  - Suggest grade adjustments for any course based on a predefined benchmark
+
+As far as we know, we are the first package in the Python ecosystem providing these functionality for UBC lecturers.
+
 ## Installation
 
 ```bash
@@ -28,6 +44,8 @@ $ pip install -i https://test.pypi.org/simple/ pygtracker
 The official documentation is hosted on Read the Docs: https://pygtracker.readthedocs.io/en/latest/
 
 ## Contributors
+
+We welcome and recognize all contributions. You can see a list of current contributors in the [contributors tab](https://github.com/jianructose/pygtracker/graphs/contributors).
 
 - Javairia Raza
 - Jianru Deng
