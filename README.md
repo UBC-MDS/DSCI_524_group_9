@@ -7,17 +7,17 @@
 
 The main components of this package are:
 
-- Register the courses
+- Register courses
   - Read/store the courses information as a dataframe
-- Record the grade for students
-  - Read/store the students grade for each assessment as a data frame
-- Summarize the grades by course
+- Record grades for students
+  - Read/store the students' grade for each assessment as a data frame
+- Summarize grades by courses
   - Provide summary statistics on the courses 
   - Provide the ranking of courses based on courses' average grade
-- Summarise the grades by students
+- Summarise grades by students
   - Provide the ranking of students' average grades for the course selected (or the whole program).
 - Suggest grade adjustment
-  - Suggest grade adjustments for any course based on a predefined benchmark
+  - Suggest grade adjustments for any course based on predefined benchmarks
 
 As far as we know, we are the first package in the Python ecosystem providing these functionality for UBC lecturers.
 
