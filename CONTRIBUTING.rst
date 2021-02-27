@@ -5,7 +5,7 @@ Contributing
 ============
 
 Contributions are welcome, and they are greatly appreciated! Every little bit
-helps, and credit will always be given.
+helps, and credit will always be given. The chosen workflow strategy is Github Flow.
 
 You can contribute in many ways:
 
