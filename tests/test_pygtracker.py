@@ -34,7 +34,7 @@ def test_version():
 # Start tests for rank_students
 
 # tests that the user inputs the right number of students
-def test_number_of_students():
+def test_ranks_students_num_of_students_match():
     assert (
         gradetracker.rank_students(n=4).shape[0]
     ) == 4, "Number of students don't match"
