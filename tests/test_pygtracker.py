@@ -56,9 +56,10 @@ def test_rank_students_course_input_not_exist():
 
 # check the columns of the dataframe that come of the function
 def test_rank_students_columns_names_match():
-    assert gradetracker.rank_students(course_id="511", n=1).columns[0] == "student_id"
-    assert gradetracker.rank_students(course_id="511", n=1).columns[1] == "rank"
-    assert gradetracker.rank_students(course_id="511", n=1).columns[2] == "grade"
+    colums_list = gradetracker.rank_students(course_id="511", n=1).columns
+    assert columns_list[0] == "student_id"
+    assert columns_list[1] == "rank"
+    assert columns_list[2] == "grade"
 
 
 # End tests for rank_students
