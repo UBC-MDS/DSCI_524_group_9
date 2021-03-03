@@ -47,12 +47,12 @@ def test_rank_students_course_input_not_exist():
 
 
 # dataframe is equal to an example dataframe
-def test_df_equal():
-    example_df = pd.DataFrame(
-        {"student_id": "nameofstudent", "rank": 1, "grade": "addgradehere"}, index=[1]
-    )
-    assert example_df.equals(gradetracker.rank_students(course_id="511", n=1))
+#def test_df_equal():
+    #example_df = pd.DataFrame(
+        #{"student_id": "nameofstudent", "rank": 1, "grade": "addgradehere"}, index=[1]
+    #)
 
+    #assert example_df.equals(gradetracker.rank_students(course_id="511", n=1))
 
 # check the columns of the dataframe that come of the function
 def test_rank_students_columns_names_match():
