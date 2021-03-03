@@ -30,4 +30,19 @@ def test_suggest_grade_adjustment_course_id_not_string():
     tracker = pygtracker.GradeTracker()
     with raises(TypeError):
         tracker.suggest_grade_adjustment(None)
+
+def test_suggest_grade_adjustment_benchmark_course_not_float():
+    tracker = pygtracker.GradeTracker()
+    with raises(TypeError):
+        tracker.suggest_grade_adjustment("511", "0.8")
+
+def test_suggest_grade_adjustment_benchmark_lab_not_float():
+    tracker = pygtracker.GradeTracker()
+    with raises(TypeError):
+        tracker.suggest_grade_adjustment("511", 0.8, "0.9")
+
+def test_suggest_grade_adjustment_benchmark_quiz_not_float():
+    tracker = pygtracker.GradeTracker()
+    with raises(TypeError):
+        tracker.suggest_grade_adjustment("511", 0.8, 0.9, "0.9")
 # End tests for suggest_grade_adjustments
