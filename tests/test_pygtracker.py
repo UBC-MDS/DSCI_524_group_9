@@ -32,52 +32,94 @@ def test_version():
 def test_suggest_grade_adjustment_course_id_not_string():
     tracker = pygtracker.GradeTracker()
     with raises(TypeError):
-        tracker.suggest_grade_adjustment(None)
+        tracker.suggest_grade_adjustment(course_id=None)
 
 def test_suggest_grade_adjustment_benchmark_course_not_float():
     tracker = pygtracker.GradeTracker()
     with raises(TypeError):
-        tracker.suggest_grade_adjustment("511", "80")
+        tracker.suggest_grade_adjustment(
+            course_id="511",
+            benchmark_course="80"
+            )
 
 def test_suggest_grade_adjustment_benchmark_lab_not_float():
     tracker = pygtracker.GradeTracker()
     with raises(TypeError):
-        tracker.suggest_grade_adjustment("511", 80, "90")
+        tracker.suggest_grade_adjustment(
+            course_id="511",
+            benchmark_course=80,
+            benchmark_lab="90"
+            )
 
 def test_suggest_grade_adjustment_benchmark_quiz_not_float():
     tracker = pygtracker.GradeTracker()
     with raises(TypeError):
-        tracker.suggest_grade_adjustment("511", 80, 90, "90")
+        tracker.suggest_grade_adjustment(
+            course_id="511",
+            benchmark_course=80,
+            benchmark_lab=90,
+            benchmark_quiz="90"
+            )
 
 def test_suggest_grade_adjustment_benchmark_course_more_than_one_hundred():
     tracker = pygtracker.GradeTracker()
     with raises(ValueError):
-        tracker.suggest_grade_adjustment("511", 150, 90, 90)
+        tracker.suggest_grade_adjustment(
+            course_id="511",
+            benchmark_course=150,
+            benchmark_lab=90,
+            benchmark_quiz=90
+            )
 
 def test_suggest_grade_adjustment_benchmark_course_less_than_zero():
     tracker = pygtracker.GradeTracker()
     with raises(ValueError):
-        tracker.suggest_grade_adjustment("511", -2, 90, 90)
+        tracker.suggest_grade_adjustment(
+            course_id="511",
+            benchmark_course=-2,
+            benchmark_lab=90,
+            benchmark_quiz=90
+            )
 
 def test_suggest_grade_adjustment_benchmark_lab_more_than_one_hundred():
     tracker = pygtracker.GradeTracker()
     with raises(ValueError):
-        tracker.suggest_grade_adjustment("511", 90, 150, 90)
+        tracker.suggest_grade_adjustment(
+            course_id="511",
+            benchmark_course=90,
+            benchmark_lab=150,
+            benchmark_quiz=90
+            )
 
 def test_suggest_grade_adjustment_benchmark_lab_less_than_zero():
     tracker = pygtracker.GradeTracker()
     with raises(ValueError):
-        tracker.suggest_grade_adjustment("511", 90, -2, 90)
+        tracker.suggest_grade_adjustment(
+            course_id="511",
+            benchmark_course=90,
+            benchmark_lab=-2,
+            benchmark_quiz=90
+            )
 
 def test_suggest_grade_adjustment_benchmark_quiz_more_than_one_hundred():
     tracker = pygtracker.GradeTracker()
     with raises(ValueError):
-        tracker.suggest_grade_adjustment("511", 90, 90, 150)
+        tracker.suggest_grade_adjustment(
+            course_id="511",
+            benchmark_course=90,
+            benchmark_lab=90,
+            benchmark_quiz=150
+            )
 
 def test_suggest_grade_adjustment_benchmark_quiz_less_than_zero():
     tracker = pygtracker.GradeTracker()
     with raises(ValueError):
-        tracker.suggest_grade_adjustment("511", 90, 90, -2)
+        tracker.suggest_grade_adjustment(
+            course_id="511",
+            benchmark_course=90,
+            benchmark_lab=90,
+            benchmark_quiz=-2
+            )
 
 def test_suggest_grade_adjustment_no_adjustment_needed():
     tracker = generate_input_suggest_grade_adjustment()
@@ -99,9 +141,7 @@ def test_suggest_grade_adjustment_adjust_labs():
         benchmark_quiz=85
         )
 
-    expected_grades = pd.DataFrame(np.array([['511', 'studentA', 95, 95, 95, 95, 85, 85]]),
-                   columns=['course_id', 'student_id', 'lab1', 'lab2', 'lab3', 'lab4', 'quiz1', 'quiz2'])
-    expected_grades = convert_dtypes_to_float(expected_grades)
+    expected_grades = generate_expected_grades([95, 95, 95, 95, 85, 85])
     assert_frame_equal(new_grades, expected_grades)
 
 def test_suggest_grade_adjustment_adjust_quiz():
@@ -113,9 +153,19 @@ def test_suggest_grade_adjustment_adjust_quiz():
         benchmark_quiz=90
         )
 
-    expected_grades = pd.DataFrame(np.array([['511', 'studentA', 90, 90, 90, 90, 90, 90]]),
-                   columns=['course_id', 'student_id', 'lab1', 'lab2', 'lab3', 'lab4', 'quiz1', 'quiz2'])
-    expected_grades = convert_dtypes_to_float(expected_grades)
+    expected_grades = generate_expected_grades([90, 90, 90, 90, 90, 90])
+    assert_frame_equal(new_grades, expected_grades)
+
+def test_suggest_grade_adjustment_adjust_course():
+    tracker = generate_input_suggest_grade_adjustment()
+    new_grades = tracker.suggest_grade_adjustment(
+        course_id='511',
+        benchmark_course=98,
+        benchmark_lab=85,
+        benchmark_quiz=90
+        )
+
+    expected_grades = generate_expected_grades([100, 100, 100, 100, 100, 90])
     assert_frame_equal(new_grades, expected_grades)
 
 def generate_input_suggest_grade_adjustment():
@@ -124,9 +174,17 @@ def generate_input_suggest_grade_adjustment():
                    columns=['course_id', 'lab1', 'lab2', 'lab3', 'lab4', 'quiz1', 'quiz2'])
     tracker.grades = pd.DataFrame(np.array([['511', 'studentA', 90, 90, 90, 90, 85, 85]]),
                    columns=['course_id', 'student_id', 'lab1', 'lab2', 'lab3', 'lab4', 'quiz1', 'quiz2'])
+    tracker.courses = convert_dtypes_to_float(tracker.courses)
     tracker.grades = convert_dtypes_to_float(tracker.grades)
 
     return tracker
+
+def generate_expected_grades(grades):
+    expected_grades = pd.DataFrame(np.array([['511', 'studentA'] + grades]),
+                   columns=['course_id', 'student_id', 'lab1', 'lab2', 'lab3', 'lab4', 'quiz1', 'quiz2'])
+    expected_grades = convert_dtypes_to_float(expected_grades)
+
+    return expected_grades
 
 def convert_dtypes_to_float(df):
     new_dtypes = {}

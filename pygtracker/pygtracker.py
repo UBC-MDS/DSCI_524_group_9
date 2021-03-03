@@ -1,6 +1,5 @@
 # Author: Javairia, Jianru, Yanhua and Vu
-
-
+import numpy as np
 class GradeTracker:
     """
     A grade tracker to help UBC MDS lecturers to manage, analyze and adjust students' grades
@@ -173,9 +172,13 @@ class GradeTracker:
 
         adjusted = self.grades[self.grades['course_id'] == course_id].copy()
 
-        for column in adjusted.columns:
-            if column != 'course_id' and column != 'student_id':
-                # print(adjusted[column])
+        # adjust quizzes or labs
+        columns = adjusted.columns.values
+
+        for col in ['course_id', 'student_id']:
+            columns = np.delete(columns, np.where(columns == col))
+
+        for column in columns:
                 if column.startswith('quiz'):
                     while adjusted[column].mean() < benchmark_quiz:
                         adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
@@ -183,4 +186,35 @@ class GradeTracker:
                     while adjusted[column].mean() < benchmark_lab:
                         adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
 
+        # adjust course
+        weights = self.courses[self.courses['course_id'] == course_id]
+
+        avg_course = (adjusted[columns] @ weights[columns].T).mean()[0]
+
+        for column in columns:
+            print("avg_course", avg_course)
+
+            if avg_course >= benchmark_course:
+                break
+
+            avg_component = adjusted[column].mean()
+
+            # how much average course grade increases
+            # if all students have max score in this component
+            diff = (100 - avg_component) * weights[column][0]
+
+            # if this increase does not make the average course grade
+            # higher than the benchmark
+            if avg_course + diff < benchmark_course:
+                # let everyone have 100 marks
+                adjusted[column] =  adjusted[column].apply(lambda x: 100)
+                avg_course += diff
+            else:
+                # increase gradually until it meets the benchmark
+                while avg_course < benchmark_course:
+                    adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
+                    avg_course = (adjusted[columns] @ weights[columns].T).mean()[0]
+                break
+
+        adjusted[columns] = adjusted[columns].apply(lambda x: x * 1.0)
         return adjusted
