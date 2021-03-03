@@ -41,7 +41,7 @@ def test_ranks_students_num_of_students_match():
 
 
 # raises an error when a course id is not a part of the dataset
-def test_course_input():
+def test_rank_students_course_input_not_exist():
     with raises(NameError):
         gradetracker.rank_students(course_id="500", n=4)
 
