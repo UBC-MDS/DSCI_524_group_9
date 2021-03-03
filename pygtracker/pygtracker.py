@@ -157,14 +157,18 @@ class GradeTracker:
         """
         if not isinstance(course_id, str):
             raise TypeError("Course id should be a string.")
-        
-        if not isinstance(benchmark_course, float):
-            raise TypeError("Course benchmark should be a float.")
 
-        if not isinstance(benchmark_lab, float):
-            raise TypeError("Lab benchmark should be a float.")
+        metrics = {
+            benchmark_course: "Course benchmark",
+            benchmark_lab: "Lab benchmark",
+            benchmark_quiz: "Quiz benchmark"
+        }
 
-        if not isinstance(benchmark_quiz, float):
-            raise TypeError("Quiz benchmark should be a float.")
+        for benchmark, name in metrics.items():
+            if not isinstance(benchmark, float):
+                raise TypeError(name + " should be a float.")
+
+            if benchmark < 0 or benchmark > 1:
+                raise ValueError(name + " should be between 0 and 1 (inclusive)")
 
         return None
