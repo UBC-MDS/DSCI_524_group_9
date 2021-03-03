@@ -45,4 +45,34 @@ def test_suggest_grade_adjustment_benchmark_quiz_not_float():
     tracker = pygtracker.GradeTracker()
     with raises(TypeError):
         tracker.suggest_grade_adjustment("511", 0.8, 0.9, "0.9")
+
+def test_suggest_grade_adjustment_benchmark_course_more_than_one():
+    tracker = pygtracker.GradeTracker()
+    with raises(ValueError):
+        tracker.suggest_grade_adjustment("511", 1.5, 0.9, 0.9)
+
+def test_suggest_grade_adjustment_benchmark_course_less_than_zero():
+    tracker = pygtracker.GradeTracker()
+    with raises(ValueError):
+        tracker.suggest_grade_adjustment("511", -0.2, 0.9, 0.9)
+
+def test_suggest_grade_adjustment_benchmark_lab_more_than_one():
+    tracker = pygtracker.GradeTracker()
+    with raises(ValueError):
+        tracker.suggest_grade_adjustment("511", 0.9, 1.5, 0.9)
+
+def test_suggest_grade_adjustment_benchmark_lab_less_than_zero():
+    tracker = pygtracker.GradeTracker()
+    with raises(ValueError):
+        tracker.suggest_grade_adjustment("511", 0.9, -0.2, 0.9)
+
+def test_suggest_grade_adjustment_benchmark_quiz_more_than_one():
+    tracker = pygtracker.GradeTracker()
+    with raises(ValueError):
+        tracker.suggest_grade_adjustment("511", 0.9, 0.9, 1.5)
+
+def test_suggest_grade_adjustment_benchmark_quiz_less_than_zero():
+    tracker = pygtracker.GradeTracker()
+    with raises(ValueError):
+        tracker.suggest_grade_adjustment("511", 0.9, 0.9, -0.2)
 # End tests for suggest_grade_adjustments
