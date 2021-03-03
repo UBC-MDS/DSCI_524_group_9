@@ -157,5 +157,14 @@ class GradeTracker:
         """
         if not isinstance(course_id, str):
             raise TypeError("Course id should be a string.")
+        
+        if not isinstance(benchmark_course, float):
+            raise TypeError("Course benchmark should be a float.")
+
+        if not isinstance(benchmark_lab, float):
+            raise TypeError("Lab benchmark should be a float.")
+
+        if not isinstance(benchmark_quiz, float):
+            raise TypeError("Quiz benchmark should be a float.")
 
         return None
