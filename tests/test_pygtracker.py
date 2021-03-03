@@ -104,6 +104,20 @@ def test_suggest_grade_adjustment_adjust_labs():
     expected_grades = convert_dtypes_to_float(expected_grades)
     assert_frame_equal(new_grades, expected_grades)
 
+def test_suggest_grade_adjustment_adjust_quiz():
+    tracker = generate_input_suggest_grade_adjustment()
+    new_grades = tracker.suggest_grade_adjustment(
+        course_id='511',
+        benchmark_course=85,
+        benchmark_lab=85,
+        benchmark_quiz=90
+        )
+
+    expected_grades = pd.DataFrame(np.array([['511', 'studentA', 90, 90, 90, 90, 90, 90]]),
+                   columns=['course_id', 'student_id', 'lab1', 'lab2', 'lab3', 'lab4', 'quiz1', 'quiz2'])
+    expected_grades = convert_dtypes_to_float(expected_grades)
+    assert_frame_equal(new_grades, expected_grades)
+
 def generate_input_suggest_grade_adjustment():
     tracker = pygtracker.GradeTracker()
     tracker.courses = pd.DataFrame(np.array([['511', 0.15, 0.15, 0.15, 0.15, 0.2, 0.2]]),
