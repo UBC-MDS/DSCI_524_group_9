@@ -1,6 +1,9 @@
 from pygtracker import __version__
 from pygtracker import pygtracker
 from pytest import raises
+import pandas as pd
+import numpy as np
+from pandas._testing import assert_frame_equal
 
 def test_version():
     assert __version__ == '0.1.0'
@@ -75,4 +78,20 @@ def test_suggest_grade_adjustment_benchmark_quiz_less_than_zero():
     tracker = pygtracker.GradeTracker()
     with raises(ValueError):
         tracker.suggest_grade_adjustment("511", 0.9, 0.9, -0.2)
+
+def test_suggest_grade_adjustment_no_adjustment_needed():
+    tracker = generate_input_suggest_grade_adjustment()
+    new_grades = tracker.suggest_grade_adjustment('511', 0.85, 0.85, 0.85)
+
+    assert_frame_equal(new_grades, tracker.grades[tracker.grades['course_id'] == '511'])
+
+def generate_input_suggest_grade_adjustment():
+    tracker = pygtracker.GradeTracker()
+    tracker.courses = pd.DataFrame(np.array([['511', 0.15, 0.15, 0.15, 0.15, 0.2, 0.2]]),
+                   columns=['course_id', 'lab1', 'lab2', 'lab3', 'lab4', 'quiz1', 'quiz2'])
+    tracker.grades = pd.DataFrame(np.array([['511', 'studentA', 90, 90, 90, 90, 85, 85]]),
+                   columns=['course_id', 'student_id', 'lab1', 'lab2', 'lab3', 'lab4', 'quiz1', 'quiz2'])
+    
+    return tracker
+
 # End tests for suggest_grade_adjustments
