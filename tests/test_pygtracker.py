@@ -1,5 +1,6 @@
 from pygtracker import __version__
 from pygtracker import pygtracker
+from pytest import raises
 
 def test_version():
     assert __version__ == '0.1.0'
@@ -25,5 +26,8 @@ def test_version():
 # End tests for rank_students
 
 # Start tests for suggest_grade_adjustment
-
+def test_suggest_grade_adjustment_course_id_not_string():
+    tracker = pygtracker.GradeTracker()
+    with raises(TypeError):
+        tracker.suggest_grade_adjustment(None)
 # End tests for suggest_grade_adjustments
