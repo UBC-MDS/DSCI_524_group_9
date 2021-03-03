@@ -55,7 +55,7 @@ def test_df_equal():
 
 
 # check the columns of the dataframe that come of the function
-def test_df_columns():
+def test_rank_students_columns_names_match():
     assert gradetracker.rank_students(course_id="511", n=1).columns[0] == "student_id"
     assert gradetracker.rank_students(course_id="511", n=1).columns[1] == "rank"
     assert gradetracker.rank_students(course_id="511", n=1).columns[2] == "grade"
