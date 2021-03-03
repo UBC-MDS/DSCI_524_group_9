@@ -171,4 +171,16 @@ class GradeTracker:
             if benchmark < 0 or benchmark > 1:
                 raise ValueError(name + " should be between 0 and 1 (inclusive)")
 
-        return None
+        adjusted = self.grades[self.grades['course_id'] == course_id].copy()
+
+        for column in adjusted.columns:
+            if column != 'course_id' and column != 'student_id':
+                if column.startswith('quiz'):
+                    while adjusted[column].mean() < benchmark_quiz:
+                        adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
+                else:
+                    while adjusted[column].mean() < benchmark_lab:
+                        adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
+
+
+        return adjusted
