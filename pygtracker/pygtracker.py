@@ -155,4 +155,7 @@ class GradeTracker:
                 assessment2: float
                 ...
         """
+        if not isinstance(course_id, str):
+            raise TypeError("Course id should be a string.")
+
         return None
