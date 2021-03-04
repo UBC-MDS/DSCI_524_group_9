@@ -62,7 +62,7 @@ def test_record_grades_course_id_valid():
     with raises(ValueError):
         tracker.record_grades(df)
 
-def test_record_grade_assess_valid():
+def test_record_grade_assess_invalid():
     tracker=pygtracker.GradeTracker()
     df=pd.DataFrame()
     df['course_id']=[571]
