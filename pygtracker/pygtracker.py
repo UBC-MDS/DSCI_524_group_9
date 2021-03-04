@@ -1,5 +1,6 @@
 # Author: Javairia, Jianru, Yanhua and Vu
 import numpy as np
+import pandas as pd
 class GradeTracker:
     """
     A grade tracker to help UBC MDS lecturers to manage, analyze and adjust students' grades
