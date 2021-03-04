@@ -137,7 +137,7 @@ class GradeTracker:
             raise TypeError("N value should be a integer.")
 
         # call helper function and get the dataframe
-        course_and_grade_df = calculate_final_grade(
+        course_and_grade_df = self.calculate_final_grade(
             self.courses["course_id"].unique().tolist()
         )
 
@@ -164,10 +164,6 @@ class GradeTracker:
             final_ranking = ranking.head(n)
 
         else:
-            # convert course id from string to integer
-            # course_id_converted = (
-            # int(course_id) if type(course_id) == str else course_id
-            # )
             # filter based on specified course
             filtered = course_and_grade_df[
                 course_and_grade_df["course_id"].isin([course_id])

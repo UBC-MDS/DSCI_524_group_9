@@ -30,17 +30,15 @@ def test_version():
 
 # tests that the user inputs the right number of students
 def test_rank_students_num_of_students_match():
-    gradetracker = pygtracker.GradeTracker()
-    assert (
-        gradetracker.rank_students(n=4).shape[0]
-    ) == 4, "Number of students don't match"
+    tracker = generate_input_calculate_final_grade()
+    assert (tracker.rank_students(n=4).shape[0]) == 4, "Number of students don't match"
 
 
 # raises an error when a course id is not a part of the dataset
 def test_rank_students_course_input_not_exist():
-    gradetracker = pygtracker.GradeTracker()
+    tracker = generate_input_calculate_final_grade()
     with raises(NameError):
-        gradetracker.rank_students(course_id="500", n=4)
+        tracker.rank_students(course_id="500", n=4)
 
 
 def test_rank_students_ascending_input_not_bool():
@@ -62,10 +60,9 @@ def test_rank_students_course_input_not_integer():
 
 
 # dataframe is equal to an example dataframe - when if statement is False
-def test_if_false_df_equal():
+def test_rank_students_one_course_df_equal():
     tracker = generate_input_calculate_final_grade()
-    course_and_grade_df = tracker.calculate_final_grade(["511"])
-    rank_df = rank_students(course_id="511", n=1, ascending=False)
+    rank_df = tracker.rank_students(course_id="511", n=1, ascending=False)
 
     example_df = pd.DataFrame(
         {"student_id": "joel", "grade": 90.82, "rank": 1.0}, index=[3]
@@ -75,10 +72,9 @@ def test_if_false_df_equal():
 
 
 # dataframe is equal to an example dataframe - when if statement is True
-def test_if_true_df_equal():
+def test_rank_students_all_courses_df_equal():
     tracker = generate_input_calculate_final_grade()
-    course_and_grade_df = tracker.calculate_final_grade(["511", "522"])
-    rank_df = rank_students(course_id="all", n=1, ascending=False)
+    rank_df = tracker.rank_students(course_id="all", n=1, ascending=False)
 
     example_df = pd.DataFrame(
         {"student_id": "joel", "grade": 91.81, "rank": 1.0}, index=[0]
@@ -90,8 +86,8 @@ def test_if_true_df_equal():
 # check the columns of the dataframe that come of the function
 def test_rank_students_columns_names_match():
     tracker = generate_input_calculate_final_grade()
-    df = tracker.calculate_final_grade(["511", "522"])
-    columns_list = rank_students(course_id="511", n=1).columns
+    # df = tracker.calculate_final_grade(["511", "522"])
+    columns_list = tracker.rank_students(course_id="511", n=1).columns
     assert columns_list[0] == "student_id"
     assert columns_list[1] == "grade"
     assert columns_list[2] == "rank"
