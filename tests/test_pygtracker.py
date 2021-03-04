@@ -33,7 +33,7 @@ def test_generate_course_statistics_course_id_boolean():
         tracker.generate_course_statistics(course_ids=[True, "511"])
 
 
-def test_generate_course_statistics_input_type2():
+def test_generate_course_statistics_course_id_not_list_of_string():
     tracker = pygtracker.GradeTracker()
     with raises(TypeError):
         tracker.generate_course_statistics(course_ids="511")
