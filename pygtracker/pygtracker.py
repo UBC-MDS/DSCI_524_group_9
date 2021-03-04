@@ -83,7 +83,7 @@ class GradeTracker:
                 3rd-quantile: float
         """
 
-        course_list = ["511", "522"]  # = list(self.courses.course_id.unique())
+        course_list = list(self.courses.course_id.unique())
 
         # check input type
         if type(course_ids) != list:
@@ -98,32 +98,7 @@ class GradeTracker:
             error_input = [x for x in course_ids if x not in course_list]
             raise ValueError("Course(s) " + str(error_input)[1:-1] + " doesn't exit.")
 
-        # final_grade = self.calculate_final_grade(course_ids)
-        # the following is a toy dataset to test. Comment it and use the
-        # above line to generate final_grade
-        final_grade = pd.DataFrame()
-        final_grade["course_id"] = [
-            "511",
-            "511",
-            "511",
-            "511",
-            "522",
-            "522",
-            "522",
-            "522",
-        ]
-        final_grade["student_id"] = [
-            "tom",
-            "tiff",
-            "mike",
-            "joel",
-            "tom",
-            "tiff",
-            "mike",
-            "joel",
-        ]
-        final_grade["grade"] = [1, 2, 3, 4, 5, 6, 7, 8]
-        # toy dataset ends
+        final_grade = self.calculate_final_grade(course_ids)
 
         statistics = list()
 
@@ -161,6 +136,7 @@ class GradeTracker:
                 grade: float
         """
 
+        # check input type
         if type(descending) != bool:
             raise TypeError("descending should be a boolean value")
 
@@ -170,7 +146,7 @@ class GradeTracker:
                 "method only accepts 'mean', '1st-quantile', 'median' or '3rd-quantile'"
             )
 
-        course_list = ["511", "522"]  # = list(self.courses.course_id.unique())
+        course_list = list(self.courses.course_id.unique())
 
         course_rank_df = pd.DataFrame()
 

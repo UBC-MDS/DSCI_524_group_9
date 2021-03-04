@@ -39,12 +39,12 @@ def test_generate_course_statistics_course_id_not_list_of_string():
         tracker.generate_course_statistics(course_ids="511")
 
 
-# def test_generate_course_statistics_equal():
-# tracker = pygtracker.GradeTracker()
-# output = tracker.generate_course_statistics()
+def test_generate_course_statistics_equal():
+    tracker = pygtracker.GradeTracker()
+    statistics = tracker.generate_course_statistics()
 
-# assert output[output["course_id"]=="511"][1] == 87.87
-# assert output[output["course_id"]=="522"][3] == 90.86
+    assert statistics[statistics["course_id"] == "511"][1] == 87.87
+    assert statistics[statistics["course_id"] == "522"][3] == 90.86
 
 
 def test_generate_course_statistics_output_match():
@@ -72,6 +72,15 @@ def test_rank_courses_input_method():
     tracker = pygtracker.GradeTracker()
     with raises(ValueError):
         tracker.rank_courses(method="avg")
+
+
+def test_generate_course_statistics_equal():
+    tracker = pygtracker.GradeTracker()
+    output_mean = tracker.rank_courses()
+    output_median = tracker.rank_courses(method="mean")
+
+    assert output_mean.iloc[1]["grade"] == 87.87
+    assert output_median.iloc[0]["grade"] == 90.86
 
 
 def test_rank_courses_order():
