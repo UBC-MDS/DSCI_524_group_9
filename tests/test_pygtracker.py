@@ -77,7 +77,7 @@ def test_rank_courses_input_method():
 def test_rank_courses_equal():
     tracker = pygtracker.GradeTracker()
     output_mean = tracker.rank_courses()
-    output_median = tracker.rank_courses(method="mean")
+    output_median = tracker.rank_courses(method="median")
 
     assert output_mean.iloc[1]["grade"] == 87.87
     assert output_median.iloc[0]["grade"] == 90.86
