@@ -3,7 +3,7 @@ from pygtracker import pygtracker
 from pytest import raises
 import pandas as pd
 import numpy as np
-from pandas._testing import assert_frame_equal
+from pandas._testing import assert_frame_equal, assert_series_equal
 
 def test_version():
     assert __version__ == '0.1.0'
@@ -18,9 +18,59 @@ def test_version():
 
 # Start tests for generate_course_statistics
 
+def test_generate_course_statistics_input_not_exist():
+    tracker = pygtracker.GradeTracker()
+    with raises(NameError):
+        tracker.generate_course_statistics(course_id=["500", "511"])
+
+# the output is equal to the statistics summary calculate mannually
+#def test_generate_course_statistics_equal():
+    #511_mean = num1
+    #522_median = num2
+
+    #tracker = pygtracker.GradeTracker()
+    #output = tracker.generate_course_statistics()
+
+    #assert output[output["course_id"]=="511"][1] == 511_mean
+    #assert output[output["course_id"]=="522"][3] == 522_median
+
+# check the columns of the dataframe that come of the function
+
+
+def test_generate_course_statistics_columns_name_match():
+    tracker = pygtracker.GradeTracker()
+    colums_list = tracker.generate_course_statistics().columns
+    assert columns_list[0] == "course_id"
+    assert columns_list[1] == "mean"
+    assert columns_list[2] == "1st-quantile"
+    assert columns_list[3] == "median"
+    assert columns_list[4] == "3st-quantile"
+
+
 # End tests for generate_course_statistics
 
 # Start tests for rank_courses
+def test_rank_courses_input_method():
+    tracker = pygtracker.GradeTracker()
+    with raises(ValueError):
+        tracker.rank_courses(method="avg")
+
+def test_rank_courses_order():
+    tracker = pygtracker.GradeTracker()
+    desc_rank = tracker.rank_courses(descending=True)
+    asc_rank = tracker.rank_courses(descending=False)
+    
+    assert_series_equal(desc_rank.iloc[0], asc_rank[-1])
+
+
+def test_rank_courses_columns_names_match():
+    tracker = pygtracker.GradeTracker()
+    colums_list = tracker.rank_courses().columns
+    assert columns_list[0] == "course_id"
+    assert columns_list[1] == "rank"
+    assert columns_list[2] == "grade"
+
+
 
 # End tests for rank_courses
 
