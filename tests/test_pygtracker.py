@@ -41,7 +41,7 @@ def test_generate_course_statistics_course_id_not_list_of_string():
 
 def test_generate_course_statistics_equal():
     tracker = pygtracker.GradeTracker()
-    statistics = tracker.generate_course_statistics()
+    statistics = tracker.generate_course_statistics(courses_ids=["511", "522"])
 
     assert statistics[statistics["course_id"] == "511"][1] == 87.87
     assert statistics[statistics["course_id"] == "522"][3] == 90.86
