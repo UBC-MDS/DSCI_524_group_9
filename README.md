@@ -9,7 +9,7 @@
 There are existing packages to manage students' grades in the Python ecosystem. For example, [grades-report](https://pypi.org/project/grades-report/) is a package purely generating statistics from all grades. In addition, [edx-bulk-grades](https://pypi.org/project/edx-bulk-grades/) aids lecturers in grading and modifying students' grades in bulk. However, these packages are lacking useful features that are unique to the MDS program, such as identifying students / courses that are much different from their peers or adjusting grades to make sure they conform to MDS standard. As a result, we come up with this useful tool which helps UBC MDS lecturers have a better control of student performance.
 
 ## Features
-`pygtracker` contains seven functions: `register_courses`, `record_grades`, `calculate_final_grade`, `generate_course_statistics`, `rank_courses`, `rank_students` and `suggest_grade_adjustment`.
+This package contains seven functions: `register_courses`, `record_grades`, `calculate_final_grade`, `generate_course_statistics`, `rank_courses`, `rank_students` and `suggest_grade_adjustment`.
 
 The main components of this package are:
 
