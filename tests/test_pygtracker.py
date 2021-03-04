@@ -50,6 +50,42 @@ def test_register_courses_weight_valid_2():
 
 # Start tests for record_grades
 
+def test_record_grades_course_id_valid():
+    tracker=pygtracker.GradeTracker()
+    df=pd.DataFrame()
+    df['course_id']=[517]
+    df['assessment_id']=['lab4']
+    df['grade']=100
+    df['student_id']=['elina']
+
+    with raises(ValueError):
+        tracker.record_grades(df)
+
+def test_record_grade_assess_valid():
+    tracker=pygtracker.GradeTracker()
+    df=pd.DataFrame()
+    df['course_id']=[571]
+    df['assessment_id']=['lab6']
+    df['grade']=100
+    df['student_id']=['elina']
+
+    with raises(ValueError):
+        tracker.record_grades(df)
+
+def test_record_grade_grade_valid():
+    tracker=pygtracker.GradeTracker()
+    df=pd.DataFrame()
+    df['course_id']=[511, 511, 511, 511,]
+    df['assessment_id']=['lab4', 'lab2', 'lab1', 'lab3']
+    df['grade']=[100.1, -77, 99, 88.4]
+    df['student_id']=['elina']
+
+    with raises(ValueError):
+        tracker.record_grades(df)
+
+
+
+
 # End tests for record_grades
 
 # Start tests for generate_course_statistics
