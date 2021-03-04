@@ -20,7 +20,7 @@ def test_register_courses_course_id_invalid():
     with raises(ValueError):
         tracker.register_courses(df)
 
-def test_register_courses_assess_valid():
+def test_register_courses_assess_invalid():
     tracker=pygtracker.GradeTracker()
     df=pd.DataFrame()
     df['course_id']=[522]
