@@ -83,7 +83,7 @@ class GradeTracker:
                 3rd-quantile: float
         """
 
-        course_list = list(self.courses.course_id.unique())
+        course_list = list(self.courses["course_id"])
 
         # check input type
         if type(course_ids) != list:
@@ -146,7 +146,7 @@ class GradeTracker:
                 "method only accepts 'mean', '1st-quantile', 'median' or '3rd-quantile'"
             )
 
-        course_list = list(self.courses.course_id.unique())
+        course_list = list(self.courses["course_id"])
 
         course_rank_df = pd.DataFrame()
 
