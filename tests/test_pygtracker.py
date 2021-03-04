@@ -22,12 +22,12 @@ def test_version():
 
 
 def test_generate_course_statistics_input_not_exist():
-    tracker = pygtracker.GradeTracker()
+    tracker = generate_input_calculate_final_grade()
     with raises(ValueError):
-        tracker.generate_course_statistics(course_ids=[500, "511"])
+        tracker.generate_course_statistics(course_ids=["500", "511"])
 
 
-def test_generate_course_statistics_course_id_boolean():
+def test_generate_course_statistics_input_not_str():
     tracker = pygtracker.GradeTracker()
     with raises(TypeError):
         tracker.generate_course_statistics(course_ids=[True, "511"])
@@ -40,15 +40,15 @@ def test_generate_course_statistics_course_id_not_list_of_string():
 
 
 def test_generate_course_statistics_equal():
-    tracker = pygtracker.GradeTracker()
+    tracker = generate_input_calculate_final_grade()
     statistics = tracker.generate_course_statistics(course_ids=["511", "522"])
 
-    assert round(statistics[statistics["course_id"] == "511"][1],2) == 87.87
-    assert round(statistics[statistics["course_id"] == "522"][3],2) == 90.86
+    assert round(statistics.iloc[0, 1], 2) == 87.87
+    assert round(statistics.iloc[1, 3], 2) == 90.86
 
 
 def test_generate_course_statistics_output_match():
-    tracker = pygtracker.GradeTracker()
+    tracker = tracker = generate_input_calculate_final_grade()
     row_num = len(tracker.generate_course_statistics(course_ids=["511", "522"]))
     columns_list = tracker.generate_course_statistics(course_ids=["511", "522"]).columns
     assert columns_list[0] == "course_id"
@@ -75,16 +75,16 @@ def test_rank_courses_input_method():
 
 
 def test_rank_courses_equal():
-    tracker = pygtracker.GradeTracker()
+    tracker = generate_input_calculate_final_grade()
     output_mean = tracker.rank_courses()
     output_median = tracker.rank_courses(method="median")
 
-    assert round(output_mean.iloc[1]["grade"],2) == 87.87
-    assert round(output_median.iloc[0]["grade"],2) == 90.86
+    assert round(output_mean.iloc[1]["grade"], 2) == 87.87
+    assert round(output_median.iloc[0]["grade"], 2) == 90.86
 
 
 def test_rank_courses_order():
-    tracker = pygtracker.GradeTracker()
+    tracker = generate_input_calculate_final_grade()
     assert_series_equal(
         tracker.rank_courses(descending=True).iloc[-1],
         tracker.rank_courses(descending=False).iloc[0],
@@ -92,7 +92,7 @@ def test_rank_courses_order():
 
 
 def test_rank_courses_columns_names_match():
-    tracker = pygtracker.GradeTracker()
+    tracker = tracker = generate_input_calculate_final_grade()
     columns_list = tracker.rank_courses().columns
     assert columns_list[0] == "course_id"
     assert columns_list[1] == "grade"
