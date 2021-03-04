@@ -40,7 +40,26 @@ class GradeTracker:
         -------
         None
         """
-        return None
+        course_list=[511, 512, 513, 521, 522, 523, 524, 525, 531, 532, 541, 542, 551, 552, 553, 554, 561, 562, 563, 571, 572, 573, 574, 575, 591]
+        input_courses=df.iloc[:, 0].tolist()
+        if not set(input_courses).issubset(course_list): 
+            error_input = [x for x in input_courses if x not in course_list]
+            raise ValueError("Oops, your dataframe has non-MDS Course(s) DSCI " + str(error_input)[1:-1])
+            
+        
+        assessment_list = ['lab1', 'lab2', 'lab3', 'lab4', 'milestone1', 'milestone2', 'milestone3', 'milestone4', 'feedback', 'quiz1', 'quiz2']
+        input_assess=df.iloc[:, 1].tolist()
+        if not set(input_assesss).issubset(assessment_list):
+            error_input = [x for x in input_assess if x not in assessment_list]
+            raise ValueError(f"Oops, your dataframe has non-MDS assessment(s) {str(error_input)[1:-1]}")
+        
+        if sum(df.iloc[:, 2]<0)>0 or sum(df.iloc[:, 2] >1)>0:
+            raise ValueError('The weights in your dataframe should be between 0 and 1 (inclusive)')
+
+
+        self.courses=df.pivot_table(index='course_id', columns='assessment_id', values='weight',fill_value=0).reset_index()
+        self.courses.columns.name=None
+        self.courses.course_id=self.courses.course_id.astype(str)  
 
     def record_grades(self, df):
         """
