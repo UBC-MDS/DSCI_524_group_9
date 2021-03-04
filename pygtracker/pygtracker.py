@@ -264,3 +264,45 @@ class GradeTracker:
             })
 
         return result_df
+
+def generate_input_calculate_final_grade():
+    tracker = GradeTracker()
+    tracker.courses = pd.DataFrame(np.array([
+        ['511', 0.15, 0.15, 0.15, 0.15, 0.2, 0.2, 0, 0, 0, 0, 0],
+        ['522', 0, 0, 0, 0, 0, 0 , 0.1, 0.2, 0.2, 0.3, 0.2]
+        ]),
+        columns=['course_id', 'lab1', 'lab2', 'lab3', 'lab4', 'quiz1', 'quiz2',
+                'milestone1', 'milestone2', 'milestone3', 'milestone4', 'feedback'])
+
+    tracker.grades = pd.DataFrame(np.array([
+        ['511', 'tom', 100, 100, 79.2, 83.6, 75.6, 75.6, 0, 0, 0, 0, 0],
+        ['511', 'tiff', 87.6, 100, 81.2, 89.2, 100, 73.2, 0, 0, 0, 0, 0],
+        ['511', 'mike', 84.4, 79.6, 75.2, 98.8, 84.8, 100, 0, 0, 0, 0, 0],
+        ['511', 'joel', 100, 100, 99.6, 71.2, 96.8, 79.2, 0, 0, 0, 0, 0],
+        ['522', 'tom', 0, 0, 0, 0, 0, 0, 100, 97.6, 80, 100, 100],
+        ['522', 'tiff', 0, 0, 0, 0, 0, 0, 100, 77.2, 76.8, 100, 85.6],
+        ['522', 'mike', 0, 0, 0, 0, 0, 0, 92, 75.6, 97.6, 84.4, 98.8],
+        ['522', 'joel',  0, 0, 0, 0, 0, 0, 98.4, 85.6, 96.8, 100, 82.4],
+        ]),
+        columns=['course_id', 'student_id', 'lab1', 'lab2', 'lab3', 'lab4', 'quiz1', 'quiz2',
+                'milestone1', 'milestone2', 'milestone3', 'milestone4', 'feedback'])
+    tracker.courses = convert_dtypes_to_float(tracker.courses)
+    tracker.grades = convert_dtypes_to_float(tracker.grades)
+
+    return tracker
+
+def convert_dtypes_to_float(df):
+    new_dtypes = {}
+
+    for column in df.columns:
+        if column != 'course_id' and column != 'student_id':
+            new_dtypes[column] = np.float64
+    
+    df = df.astype(new_dtypes)
+
+    return df
+
+test = generate_input_calculate_final_grade()
+
+
+print(test.calculate_final_grade(["511", "522"]))
