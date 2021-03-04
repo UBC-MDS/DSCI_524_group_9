@@ -29,7 +29,7 @@ def test_version():
 # Start tests for rank_students
 
 # tests that the user inputs the right number of students
-def test_ranks_students_num_of_students_match():
+def test_rank_students_num_of_students_match():
     gradetracker = pygtracker.GradeTracker()
     assert (
         gradetracker.rank_students(n=4).shape[0]
@@ -63,8 +63,9 @@ def test_rank_students_course_input_not_integer():
 
 # dataframe is equal to an example dataframe - when if statement is False
 def test_if_false_df_equal():
-    gradetracker = pygtracker.GradeTracker()
-    rank_df = gradetracker.rank_students(course_id="511", n=1, ascending=False)
+    tracker = generate_input_calculate_final_grade()
+    course_and_grade_df = tracker.calculate_final_grade(["511"])
+    rank_df = rank_students(course_id="511", n=1, ascending=False)
 
     example_df = pd.DataFrame(
         {"student_id": "joel", "grade": 90.82, "rank": 1.0}, index=[3]
@@ -75,8 +76,9 @@ def test_if_false_df_equal():
 
 # dataframe is equal to an example dataframe - when if statement is True
 def test_if_true_df_equal():
-    gradetracker = pygtracker.GradeTracker()
-    rank_df = gradetracker.rank_students(course_id="all", n=1, ascending=False)
+    tracker = generate_input_calculate_final_grade()
+    course_and_grade_df = tracker.calculate_final_grade(["511", "522"])
+    rank_df = rank_students(course_id="all", n=1, ascending=False)
 
     example_df = pd.DataFrame(
         {"student_id": "joel", "grade": 91.81, "rank": 1.0}, index=[0]
@@ -87,8 +89,9 @@ def test_if_true_df_equal():
 
 # check the columns of the dataframe that come of the function
 def test_rank_students_columns_names_match():
-    gradetracker = pygtracker.GradeTracker()
-    columns_list = gradetracker.rank_students(course_id="511", n=1).columns
+    tracker = generate_input_calculate_final_grade()
+    df = tracker.calculate_final_grade(["511", "522"])
+    columns_list = rank_students(course_id="511", n=1).columns
     assert columns_list[0] == "student_id"
     assert columns_list[1] == "grade"
     assert columns_list[2] == "rank"

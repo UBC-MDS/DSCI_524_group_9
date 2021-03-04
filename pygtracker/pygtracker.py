@@ -136,12 +136,9 @@ class GradeTracker:
         if not isinstance(n, int):
             raise TypeError("N value should be a integer.")
 
-        # call function that generates fake data
-        tracker_dfs = generate_input_calculate_final_grade()
-
-        # call helper function and get the dataframe - need to change when self.courses in
-        course_and_grade_df = tracker_dfs.calculate_final_grade(
-            tracker_dfs.courses["course_id"].unique().tolist()
+        # call helper function and get the dataframe
+        course_and_grade_df = calculate_final_grade(
+            self.courses["course_id"].unique().tolist()
         )
 
         # check if course_id is part of courses list - need to comment when self.courses in
