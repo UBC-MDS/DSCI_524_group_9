@@ -1,8 +1,9 @@
 from pygtracker import __version__
 from pygtracker import pygtracker
+from pytest import raises
 import pandas as pd
 import numpy as np
-from pytest import raises
+from pandas._testing import assert_frame_equal
 
 def test_version():
     assert __version__ == '0.1.0'
