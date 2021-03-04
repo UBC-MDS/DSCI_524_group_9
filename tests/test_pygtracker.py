@@ -30,7 +30,7 @@ def test_version():
 
 # tests that the user inputs the right number of students
 def test_ranks_students_num_of_students_match():
-    tracker = pygtracker.GradeTracker()
+    gradetracker = pygtracker.GradeTracker()
     assert (
         gradetracker.rank_students(n=4).shape[0]
     ) == 4, "Number of students don't match"
@@ -38,31 +38,32 @@ def test_ranks_students_num_of_students_match():
 
 # raises an error when a course id is not a part of the dataset
 def test_rank_students_course_input_not_exist():
-    tracker = pygtracker.GradeTracker()
+    gradetracker = pygtracker.GradeTracker()
     with raises(NameError):
         gradetracker.rank_students(course_id="500", n=4)
 
 
 def test_rank_students_ascending_input_not_bool():
-    tracker = pygtracker.GradeTracker()
+    gradetracker = pygtracker.GradeTracker()
     with raises(TypeError):
         gradetracker.rank_students(course_id="511", ascending="True")
 
 
 def test_rank_students_n_input_not_integer():
-    tracker = pygtracker.GradeTracker()
+    gradetracker = pygtracker.GradeTracker()
     with raises(TypeError):
         gradetracker.rank_students(n="4")
 
 
 def test_rank_students_course_input_not_integer():
-    tracker = pygtracker.GradeTracker()
+    gradetracker = pygtracker.GradeTracker()
     with raises(TypeError):
         gradetracker.rank_students(course_id=511)
 
 
 # dataframe is equal to an example dataframe
 # def test_df_equal():
+# gradetracker = pygtracker.GradeTracker()
 # example_df = pd.DataFrame(
 # {"student_id": "nameofstudent", "rank": 1, "grade": "addgradehere"}, index=[1]
 # )
@@ -71,7 +72,7 @@ def test_rank_students_course_input_not_integer():
 
 # check the columns of the dataframe that come of the function
 def test_rank_students_columns_names_match():
-    tracker = pygtracker.GradeTracker()
+    gradetracker = pygtracker.GradeTracker()
     colums_list = gradetracker.rank_students(course_id="511", n=1).columns
     assert columns_list[0] == "student_id"
     assert columns_list[1] == "rank"
