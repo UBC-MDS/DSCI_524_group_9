@@ -1,5 +1,6 @@
 # Author: Javairia, Jianru, Yanhua and Vu
 import numpy as np
+import pandas as pd
 class GradeTracker:
     """
     A grade tracker to help UBC MDS lecturers to manage, analyze and adjust students' grades
@@ -218,3 +219,48 @@ class GradeTracker:
 
         adjusted[columns] = adjusted[columns].apply(lambda x: x * 1.0)
         return adjusted
+
+    def calculate_final_grade(self, course_ids):
+        """
+        Calculate final grade for all students in a course
+
+        Parameters
+        ----------
+        course_ids: list of str
+            The ids of the courses to calculate the average grade for all students.
+
+        Returns
+        -------
+        DataFrame
+            A dataframe containing final grades for all students in a course:
+                course_id: str
+                student_id: str
+                grade: float
+        """
+
+        course_id_col = []
+        student_id_col = []
+        grade_col = []
+
+        for course_id in course_ids:
+            weights = self.courses[self.courses['course_id'] == course_id]
+            grades = self.grades[self.grades['course_id'] == course_id]
+
+            columns = grades.columns.values
+
+            for col in ['course_id', 'student_id']:
+                columns = np.delete(columns, np.where(columns == col))
+
+            final_grade = grades[columns] @ weights[columns].T.iloc[:,0]
+
+            course_id_col += [course_id] * len(final_grade)
+            student_id_col += grades['student_id'].tolist()
+            grade_col += final_grade.tolist()
+
+        result_df = pd.DataFrame({
+            'course_id': course_id_col,
+            'student_id': student_id_col,
+            'grade': grade_col
+            })
+
+        return result_df
