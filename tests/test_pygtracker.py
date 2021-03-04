@@ -1,5 +1,8 @@
 from pygtracker import __version__
 from pygtracker import pygtracker
+import pandas as pd
+import numpy as np
+from pytest import raises
 
 def test_version():
     assert __version__ == '0.1.0'
@@ -16,7 +19,7 @@ def test_register_courses_course_id_valid():
     with raises(ValueError):
         tracker.record_grades(df)
 
-def test_register_courses_weights_valid():
+def test_register_courses_assess_valid():
     tracker=pygtracker.GradeTracker()
     df=pd.DataFrame()
     df['course_id']=[522]
@@ -25,7 +28,7 @@ def test_register_courses_weights_valid():
     with raises(ValueError):
         tracker.record_grades(df)
 
-def test_register_courses_course_id_valid():
+def test_register_courses_weight_valid():
     tracker=pygtracker.GradeTracker()
     df=pd.DataFrame()
     df['course_id']=[555, 555, 555, 555]

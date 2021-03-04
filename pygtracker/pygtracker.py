@@ -41,7 +41,7 @@ class GradeTracker:
         None
         """
         course_list=[511, 512, 513, 521, 522, 523, 524, 525, 531, 532, 541, 542, 551, 552, 553, 554, 561, 562, 563, 571, 572, 573, 574, 575, 591]
-        input_courses=df.iloc[:, 0].tolist()
+        input_courses=df.course_id.tolist()
         if not set(input_courses).issubset(course_list): 
             error_input = [x for x in input_courses if x not in course_list]
             raise ValueError("Oops, your dataframe has non-MDS Course(s) DSCI " + str(error_input)[1:-1])
