@@ -29,7 +29,7 @@ def test_register_courses_assess_valid():
     with raises(ValueError):
         tracker.register_courses(df)
 
-def test_register_courses_weight_valid_1():
+def test_register_courses_weight_invalid_not_sum_to_one():
     tracker=pygtracker.GradeTracker()
     df=pd.DataFrame()
     df['course_id']=[511, 511, 511, 511,]
