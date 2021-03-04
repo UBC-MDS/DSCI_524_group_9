@@ -10,7 +10,7 @@ def test_version():
     
 # Start tests for register_courses
 
-def test_register_courses_course_id_valid():
+def test_register_courses_course_id_invalid():
     tracker=pygtracker.GradeTracker()
     df=pd.DataFrame()
     df['course_id']=[555]
