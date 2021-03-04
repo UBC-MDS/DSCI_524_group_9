@@ -1,5 +1,8 @@
 # Author: Javairia, Jianru, Yanhua and Vu
 import numpy as np
+import pandas as pd
+
+
 class GradeTracker:
     """
     A grade tracker to help UBC MDS lecturers to manage, analyze and adjust students' grades
@@ -79,7 +82,20 @@ class GradeTracker:
                 median: float
                 3rd-quantile: float
         """
-        return None
+
+        course_list = ["511", "522"]  # self.courses.course_id.unique()
+
+        if set(course_ids).issubset(set(course_list)) == False:
+            error_input = [x for x in course_ids if x not in course_list]
+            raise ValueError("Course(s) " + str(error_input)[1:-1] + " doesn't exit.")
+
+        statistics = pd.DataFrame(
+            columns=["course_id", "mean", "1st-quantile", "median", "3rd-quantile"]
+        )
+
+        statistics["course_id"] = course_ids
+
+        return statistics
 
     def rank_courses(self, method="mean", descending=True):
         """
@@ -160,7 +176,7 @@ class GradeTracker:
         metrics = {
             benchmark_course: "Course benchmark",
             benchmark_lab: "Lab benchmark",
-            benchmark_quiz: "Quiz benchmark"
+            benchmark_quiz: "Quiz benchmark",
         }
 
         for benchmark, name in metrics.items():
@@ -170,24 +186,24 @@ class GradeTracker:
             if benchmark < 0 or benchmark > 100:
                 raise ValueError(name + " should be between 0 and 100 (inclusive)")
 
-        adjusted = self.grades[self.grades['course_id'] == course_id].copy()
+        adjusted = self.grades[self.grades["course_id"] == course_id].copy()
 
         # adjust quizzes or labs
         columns = adjusted.columns.values
 
-        for col in ['course_id', 'student_id']:
+        for col in ["course_id", "student_id"]:
             columns = np.delete(columns, np.where(columns == col))
 
         for column in columns:
-                if column.startswith('quiz'):
-                    while adjusted[column].mean() < benchmark_quiz:
-                        adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
-                else:
-                    while adjusted[column].mean() < benchmark_lab:
-                        adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
+            if column.startswith("quiz"):
+                while adjusted[column].mean() < benchmark_quiz:
+                    adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
+            else:
+                while adjusted[column].mean() < benchmark_lab:
+                    adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
 
         # adjust course
-        weights = self.courses[self.courses['course_id'] == course_id]
+        weights = self.courses[self.courses["course_id"] == course_id]
 
         avg_course = (adjusted[columns] @ weights[columns].T).mean()[0]
 
@@ -207,7 +223,7 @@ class GradeTracker:
             # higher than the benchmark
             if avg_course + diff < benchmark_course:
                 # let everyone have 100 marks
-                adjusted[column] =  adjusted[column].apply(lambda x: 100)
+                adjusted[column] = adjusted[column].apply(lambda x: 100)
                 avg_course += diff
             else:
                 # increase gradually until it meets the benchmark
