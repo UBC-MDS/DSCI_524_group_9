@@ -171,7 +171,7 @@ def test_suggest_grade_adjustment_adjust_course():
 def test_calculate_final_grade_511():
     tracker = generate_input_calculate_final_grade()
 
-    final_grade = tracker.calculate_final_grade("511")
+    final_grade = tracker.calculate_final_grade(["511"])
     expected_final_grade = generate_expected_final_grades("511", [84.66, 88.34, 87.66, 90.82])
 
     assert_frame_equal(final_grade, expected_final_grade)
@@ -179,7 +179,7 @@ def test_calculate_final_grade_511():
 def test_calculate_final_grade_522():
     tracker = generate_input_calculate_final_grade()
     
-    final_grade = tracker.calculate_final_grade("522")
+    final_grade = tracker.calculate_final_grade(["522"])
     expected_final_grade = generate_expected_final_grades("522", [95.52, 87.92, 88.92, 92.8])
 
     assert_frame_equal(final_grade, expected_final_grade)
@@ -230,10 +230,10 @@ def generate_expected_grades(grades):
 
 def generate_expected_final_grades(course_id, grades):
     expected_final_grades = pd.DataFrame({
-            'course_id': np.array([course_id] * len(grades)),
+            'course_id': [course_id] * len(grades),
             'student_id': ['tom', 'tiff', 'mike', 'joel'],
             'grade': grades
-            }).reset_index(drop=True)
+            })
     
     return expected_final_grades
 

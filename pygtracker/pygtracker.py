@@ -219,14 +219,14 @@ class GradeTracker:
         adjusted[columns] = adjusted[columns].apply(lambda x: x * 1.0)
         return adjusted
 
-    def calculate_final_grade(self, course_id):
+    def calculate_final_grade(self, course_ids):
         """
         Calculate final grade for all students in a course
 
         Parameters
         ----------
-        course_id: str
-            The id of the course to be adjusted.
+        course_ids: list of str
+            The ids of the courses to calculate the average grade for all students.
 
         Returns
         -------
@@ -236,20 +236,30 @@ class GradeTracker:
                 student_id: str
                 grade: float
         """
-        weights = self.courses[self.courses['course_id'] == course_id]
-        grades = self.grades[self.grades['course_id'] == course_id]
 
-        columns = grades.columns.values
+        course_id_col = []
+        student_id_col = []
+        grade_col = []
 
-        for col in ['course_id', 'student_id']:
-            columns = np.delete(columns, np.where(columns == col))
+        for course_id in course_ids:
+            weights = self.courses[self.courses['course_id'] == course_id]
+            grades = self.grades[self.grades['course_id'] == course_id]
 
-        final_grade = grades[columns] @ weights[columns].T.iloc[:,0]
+            columns = grades.columns.values
+
+            for col in ['course_id', 'student_id']:
+                columns = np.delete(columns, np.where(columns == col))
+
+            final_grade = grades[columns] @ weights[columns].T.iloc[:,0]
+
+            course_id_col += [course_id] * len(final_grade)
+            student_id_col += grades['student_id'].tolist()
+            grade_col += final_grade.tolist()
 
         result_df = pd.DataFrame({
-            'course_id': np.array([course_id] * len(final_grade)),
-            'student_id': grades['student_id'],
-            'grade': final_grade
-            }).reset_index(drop=True)
+            'course_id': course_id_col,
+            'student_id': student_id_col,
+            'grade': grade_col
+            })
 
         return result_df
