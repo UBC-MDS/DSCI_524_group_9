@@ -77,7 +77,6 @@ def test_rank_courses_equal():
     tracker = generate_input_calculate_final_grade()
     output_mean = tracker.rank_courses()
     output_median = tracker.rank_courses(method="median")
-
     assert round(output_mean.iloc[1]["grade"], 2) == 87.87
     assert round(output_median.iloc[0]["grade"], 2) == 90.86
 
