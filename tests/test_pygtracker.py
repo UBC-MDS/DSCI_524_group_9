@@ -85,10 +85,8 @@ def test_rank_courses_equal():
 
 def test_rank_courses_order():
     tracker = generate_input_calculate_final_grade()
-    assert_series_equal(
-        tracker.rank_courses(descending=True).iloc[-1],
-        tracker.rank_courses(descending=False).iloc[0],
-    )
+    assert tracker.rank_courses(descending=True).iloc[-1, 0] == "511"
+    assert tracker.rank_courses(descending=False).iloc[0, 0] == "511"
 
 
 def test_rank_courses_columns_names_match():
