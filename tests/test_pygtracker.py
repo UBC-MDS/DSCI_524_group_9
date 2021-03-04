@@ -51,7 +51,7 @@ def test_register_courses_weight_valid_2():
 
 # Start tests for record_grades
 
-def test_record_grades_course_id_valid():
+def test_record_grades_course_id_invalid():
     tracker=pygtracker.GradeTracker()
     df=pd.DataFrame()
     df['course_id']=[517]
