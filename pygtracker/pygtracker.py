@@ -83,19 +83,68 @@ class GradeTracker:
                 3rd-quantile: float
         """
 
-        course_list = ["511", "522"]  # self.courses.course_id.unique()
+        course_list = ["511", "522"]  # = list(self.courses.course_id.unique())
 
+        # check input type
+        if type(course_ids) != list:
+            raise TypeError("course_ids should be a list of str")
+
+        for i in range(len(course_ids)):
+            if type(course_ids[i]) == str:
+                pass
+            elif type(course_ids[i]) == int:
+                course_ids[i] = str(course_ids[i])
+            else:
+                raise TypeError("course_ids should be a list of str")
+
+        # check input existence
         if set(course_ids).issubset(set(course_list)) == False:
             error_input = [x for x in course_ids if x not in course_list]
             raise ValueError("Course(s) " + str(error_input)[1:-1] + " doesn't exit.")
 
-        statistics = pd.DataFrame(
-            columns=["course_id", "mean", "1st-quantile", "median", "3rd-quantile"]
-        )
+        # final_grade = self.calculate_final_grade(course_ids)
+        # the following is a toy dataset to test. Comment it and use the
+        # above line to generate final_grade
+        final_grade = pd.DataFrame()
+        final_grade["course_id"] = [
+            "511",
+            "511",
+            "511",
+            "511",
+            "522",
+            "522",
+            "522",
+            "522",
+        ]
+        final_grade["student_id"] = [
+            "tom",
+            "tiff",
+            "mike",
+            "joel",
+            "tom",
+            "tiff",
+            "mike",
+            "joel",
+        ]
+        final_grade["grade"] = [1, 2, 3, 4, 5, 6, 7, 8]
+        # toy dataset ends
 
-        statistics["course_id"] = course_ids
+        statistics = list()
 
-        return statistics
+        for course in course_ids:
+            course_grade = final_grade[final_grade["course_id"] == course]["grade"]
+            course_statistics = {
+                "course_id": course,
+                "mean": course_grade.mean(),
+                "1st-quantile": course_grade.quantile(q=0.25),
+                "median": course_grade.median(),
+                "3rd-quantile": course_grade.quantile(q=0.75),
+            }
+            statistics.append(course_statistics)
+
+        statistics_summary = pd.DataFrame(statistics)
+
+        return statistics_summary
 
     def rank_courses(self, method="mean", descending=True):
         """
@@ -113,10 +162,28 @@ class GradeTracker:
         DataFrame
             A dataframe containing the rank for specified courses:
                 course_id: str
-                rank: int
                 grade: float
         """
-        return None
+
+        if type(descending) != bool:
+            raise TypeError("descending should be a boolean value")
+
+        possible_method = ["mean", "1st-quantile", "median", "3rd-quantile"]
+        if method not in possible_method:
+            raise ValueError(
+                "method only accepts 'mean', '1st-quantile', 'median' or '3rd-quantile'"
+            )
+
+        course_list = ["511", "522"]  # = list(self.courses.course_id.unique())
+
+        course_rank_df = pd.DataFrame()
+
+        course_rank_df = self.generate_course_statistics(course_list)[
+            ["course_id", method]
+        ].sort_values(by=method, ascending=(not descending))
+        course_rank_df.columns = ["course_id", "grade"]
+
+        return course_rank_df
 
     def rank_students(self, course_id="all", n=10, descending=True):
         """

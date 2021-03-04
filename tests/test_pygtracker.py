@@ -24,7 +24,19 @@ def test_version():
 def test_generate_course_statistics_input_not_exist():
     tracker = pygtracker.GradeTracker()
     with raises(ValueError):
-        tracker.generate_course_statistics(course_ids=["500", "511"])
+        tracker.generate_course_statistics(course_ids=[500, "511"])
+
+
+def test_generate_course_statistics_input_type1():
+    tracker = pygtracker.GradeTracker()
+    with raises(TypeError):
+        tracker.generate_course_statistics(course_ids=[True, "511"])
+
+
+def test_generate_course_statistics_input_type2():
+    tracker = pygtracker.GradeTracker()
+    with raises(TypeError):
+        tracker.generate_course_statistics(course_ids="511")
 
 
 # the output is equal to the statistics summary calculate mannually
@@ -43,19 +55,25 @@ def test_generate_course_statistics_input_not_exist():
 
 def test_generate_course_statistics_output_match():
     tracker = pygtracker.GradeTracker()
-    row_num = len(tracker.generate_course_statistics(course_ids=["511"]))
-    columns_list = tracker.generate_course_statistics(course_ids=["511"]).columns
+    row_num = len(tracker.generate_course_statistics(course_ids=["511", "522"]))
+    columns_list = tracker.generate_course_statistics(course_ids=["511", "522"]).columns
     assert columns_list[0] == "course_id"
     assert columns_list[1] == "mean"
     assert columns_list[2] == "1st-quantile"
     assert columns_list[3] == "median"
     assert columns_list[4] == "3rd-quantile"
-    assert row_num == 1
+    assert row_num == 2
 
 
 # End tests for generate_course_statistics
 
 # Start tests for rank_courses
+def test_rank_courses_input_method_type():
+    tracker = pygtracker.GradeTracker()
+    with raises(TypeError):
+        tracker.rank_courses(descending=1)
+
+
 def test_rank_courses_input_method():
     tracker = pygtracker.GradeTracker()
     with raises(ValueError):
@@ -64,18 +82,17 @@ def test_rank_courses_input_method():
 
 def test_rank_courses_order():
     tracker = pygtracker.GradeTracker()
-    desc_rank = tracker.rank_courses(descending=True)
-    asc_rank = tracker.rank_courses(descending=False)
-
-    assert_series_equal(desc_rank.iloc[0], asc_rank[-1])
+    assert_series_equal(
+        tracker.rank_courses(descending=True).iloc[-1],
+        tracker.rank_courses(descending=False).iloc[0],
+    )
 
 
 def test_rank_courses_columns_names_match():
     tracker = pygtracker.GradeTracker()
-    colums_list = tracker.rank_courses().columns
+    columns_list = tracker.rank_courses().columns
     assert columns_list[0] == "course_id"
-    assert columns_list[1] == "rank"
-    assert columns_list[2] == "grade"
+    assert columns_list[1] == "grade"
 
 
 # End tests for rank_courses
@@ -199,21 +216,28 @@ def test_suggest_grade_adjustment_adjust_course():
     expected_grades = generate_expected_grades([100, 100, 100, 100, 100, 90])
     assert_frame_equal(new_grades, expected_grades)
 
+
 def test_calculate_final_grade_511():
     tracker = generate_input_calculate_final_grade()
 
     final_grade = tracker.calculate_final_grade(["511"])
-    expected_final_grade = generate_expected_final_grades("511", [84.66, 88.34, 87.66, 90.82])
+    expected_final_grade = generate_expected_final_grades(
+        "511", [84.66, 88.34, 87.66, 90.82]
+    )
 
     assert_frame_equal(final_grade, expected_final_grade)
+
 
 def test_calculate_final_grade_522():
     tracker = generate_input_calculate_final_grade()
-    
+
     final_grade = tracker.calculate_final_grade(["522"])
-    expected_final_grade = generate_expected_final_grades("522", [95.52, 87.92, 88.92, 92.8])
+    expected_final_grade = generate_expected_final_grades(
+        "522", [95.52, 87.92, 88.92, 92.8]
+    )
 
     assert_frame_equal(final_grade, expected_final_grade)
+
 
 def generate_input_suggest_grade_adjustment():
     tracker = pygtracker.GradeTracker()
@@ -239,6 +263,69 @@ def generate_input_suggest_grade_adjustment():
 
     return tracker
 
+
+def generate_input_calculate_final_grade():
+    tracker = pygtracker.GradeTracker()
+    tracker.courses = pd.DataFrame(
+        np.array(
+            [
+                ["511", 0.15, 0.15, 0.15, 0.15, 0.2, 0.2, 0, 0, 0, 0, 0],
+                ["522", 0, 0, 0, 0, 0, 0, 0.1, 0.2, 0.2, 0.3, 0.2],
+            ]
+        ),
+        columns=[
+            "course_id",
+            "lab1",
+            "lab2",
+            "lab3",
+            "lab4",
+            "quiz1",
+            "quiz2",
+            "milestone1",
+            "milestone2",
+            "milestone3",
+            "milestone4",
+            "feedback",
+        ],
+    )
+
+    tracker.grades = pd.DataFrame(
+        np.array(
+            [
+                ["511", "tom", 100, 100, 79.2, 83.6, 75.6, 75.6, 0, 0, 0, 0, 0],
+                ["511", "tiff", 87.6, 100, 81.2, 89.2, 100, 73.2, 0, 0, 0, 0, 0],
+                ["511", "mike", 84.4, 79.6, 75.2, 98.8, 84.8, 100, 0, 0, 0, 0, 0],
+                ["511", "joel", 100, 100, 99.6, 71.2, 96.8, 79.2, 0, 0, 0, 0, 0],
+                ["522", "tom", 0, 0, 0, 0, 0, 0, 100, 97.6, 80, 100, 100],
+                ["522", "tiff", 0, 0, 0, 0, 0, 0, 100, 77.2, 76.8, 100, 85.6],
+                ["522", "mike", 0, 0, 0, 0, 0, 0, 92, 75.6, 97.6, 84.4, 98.8],
+                ["522", "joel", 0, 0, 0, 0, 0, 0, 98.4, 85.6, 96.8, 100, 82.4],
+            ]
+        ),
+        columns=[
+            "course_id",
+            "student_id",
+            "lab1",
+            "lab2",
+            "lab3",
+            "lab4",
+            "quiz1",
+            "quiz2",
+            "milestone1",
+            "milestone2",
+            "milestone3",
+            "milestone4",
+            "feedback",
+        ],
+    )
+    tracker.courses = convert_dtypes_to_float(tracker.courses)
+    tracker.grades = convert_dtypes_to_float(tracker.grades)
+
+    return tracker
+
+
+def generate_expected_grades(grades):
+    expected_grades = pd.DataFrame(
         np.array([["511", "studentA"] + grades]),
         columns=[
             "course_id",
@@ -255,14 +342,18 @@ def generate_input_suggest_grade_adjustment():
 
     return expected_grades
 
+
 def generate_expected_final_grades(course_id, grades):
-    expected_final_grades = pd.DataFrame({
-            'course_id': [course_id] * len(grades),
-            'student_id': ['tom', 'tiff', 'mike', 'joel'],
-            'grade': grades
-            })
-    
+    expected_final_grades = pd.DataFrame(
+        {
+            "course_id": [course_id] * len(grades),
+            "student_id": ["tom", "tiff", "mike", "joel"],
+            "grade": grades,
+        }
+    )
+
     return expected_final_grades
+
 
 def convert_dtypes_to_float(df):
     new_dtypes = {}
