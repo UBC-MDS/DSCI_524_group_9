@@ -136,12 +136,19 @@ class GradeTracker:
         if not isinstance(n, int):
             raise TypeError("N value should be a integer.")
 
-        # uncomment this out when we have courses and grades saved
-        # if not (course_id in (self.courses["course_id"].unique.tolist() + ["all"])):
-        # raise NameError("Course ID is not a part of the courses dataset.")
+        # call function that generates fake data
+        tracker_dfs = generate_input_calculate_final_grade()
 
-        # call helper function and get the dataframe
-        # leave space here
+        # call helper function and get the dataframe - need to change when self.courses in
+        course_and_grade_df = tracker_dfs.calculate_final_grade(
+            tracker_dfs.courses["course_id"].unique().tolist()
+        )
+
+        # check if course_id is part of courses list - need to comment when self.courses in
+        if not (
+            course_id in (course_and_grade_df["course_id"].unique().tolist() + ["all"])
+        ):
+            raise NameError("Course ID is not a part of the courses dataset.")
 
         if course_id == "all":
             # calculates the mean grade and sorts the values
@@ -161,12 +168,12 @@ class GradeTracker:
 
         else:
             # convert course id from string to integer
-            course_id_converted = (
-                int(course_id) if type(course_id) == str else course_id
-            )
+            # course_id_converted = (
+            # int(course_id) if type(course_id) == str else course_id
+            # )
             # filter based on specified course
             filtered = course_and_grade_df[
-                course_and_grade_df["course_id"].isin([course_id_converted])
+                course_and_grade_df["course_id"].isin([course_id])
             ]
             # sort the values
             ranking = filtered.drop(columns="course_id").sort_values(
@@ -177,7 +184,7 @@ class GradeTracker:
             # filter by number of students
             final_ranking = ranking.head(n)
 
-            return final_ranking
+        return final_ranking
 
     def suggest_grade_adjustment(
         self, course_id, benchmark_course=90, benchmark_lab=85, benchmark_quiz=85

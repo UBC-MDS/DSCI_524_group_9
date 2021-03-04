@@ -61,22 +61,37 @@ def test_rank_students_course_input_not_integer():
         gradetracker.rank_students(course_id=511)
 
 
-# dataframe is equal to an example dataframe
-# def test_df_equal():
-# gradetracker = pygtracker.GradeTracker()
-# example_df = pd.DataFrame(
-# {"student_id": "nameofstudent", "rank": 1, "grade": "addgradehere"}, index=[1]
-# )
+# dataframe is equal to an example dataframe - when if statement is False
+def test_if_false_df_equal():
+    gradetracker = pygtracker.GradeTracker()
+    rank_df = gradetracker.rank_students(course_id="511", n=1, ascending=False)
 
-# assert example_df.equals(gradetracker.rank_students(course_id="511", n=1))
+    example_df = pd.DataFrame(
+        {"student_id": "joel", "grade": 90.82, "rank": 1.0}, index=[3]
+    )
+
+    assert_frame_equal(rank_df, example_df)
+
+
+# dataframe is equal to an example dataframe - when if statement is True
+def test_if_true_df_equal():
+    gradetracker = pygtracker.GradeTracker()
+    rank_df = gradetracker.rank_students(course_id="all", n=1, ascending=False)
+
+    example_df = pd.DataFrame(
+        {"student_id": "joel", "grade": 91.81, "rank": 1.0}, index=[0]
+    )
+
+    assert_frame_equal(rank_df, example_df)
+
 
 # check the columns of the dataframe that come of the function
 def test_rank_students_columns_names_match():
     gradetracker = pygtracker.GradeTracker()
-    colums_list = gradetracker.rank_students(course_id="511", n=1).columns
+    columns_list = gradetracker.rank_students(course_id="511", n=1).columns
     assert columns_list[0] == "student_id"
-    assert columns_list[1] == "rank"
-    assert columns_list[2] == "grade"
+    assert columns_list[1] == "grade"
+    assert columns_list[2] == "rank"
 
 
 # End tests for rank_students
