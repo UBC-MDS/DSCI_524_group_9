@@ -42,7 +42,6 @@ def test_generate_course_statistics_course_id_not_list_of_string():
 def test_generate_course_statistics_equal():
     tracker = generate_input_calculate_final_grade()
     statistics = tracker.generate_course_statistics(course_ids=["511", "522"])
-
     assert round(statistics.iloc[0, 1], 2) == 87.87
     assert round(statistics.iloc[1, 3], 2) == 90.86
 
@@ -78,7 +77,6 @@ def test_rank_courses_equal():
     tracker = generate_input_calculate_final_grade()
     output_mean = tracker.rank_courses()
     output_median = tracker.rank_courses(method="median")
-
     assert round(output_mean.iloc[1]["grade"], 2) == 87.87
     assert round(output_median.iloc[0]["grade"], 2) == 90.86
 
