@@ -90,11 +90,7 @@ class GradeTracker:
             raise TypeError("course_ids should be a list of str")
 
         for i in range(len(course_ids)):
-            if type(course_ids[i]) == str:
-                pass
-            elif type(course_ids[i]) == int:
-                course_ids[i] = str(course_ids[i])
-            else:
+            if type(course_ids[i]) ！= str:
                 raise TypeError("course_ids should be a list of str")
 
         # check input existence

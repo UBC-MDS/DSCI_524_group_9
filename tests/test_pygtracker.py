@@ -39,18 +39,12 @@ def test_generate_course_statistics_input_type2():
         tracker.generate_course_statistics(course_ids="511")
 
 
-# the output is equal to the statistics summary calculate mannually
 # def test_generate_course_statistics_equal():
-# 511_mean = num1
-# 522_median = num2
-
 # tracker = pygtracker.GradeTracker()
 # output = tracker.generate_course_statistics()
 
-# assert output[output["course_id"]=="511"][1] == 511_mean
-# assert output[output["course_id"]=="522"][3] == 522_median
-
-# check the columns of the dataframe that come of the function
+# assert output[output["course_id"]=="511"][1] == 87.87
+# assert output[output["course_id"]=="522"][3] == 90.86
 
 
 def test_generate_course_statistics_output_match():
