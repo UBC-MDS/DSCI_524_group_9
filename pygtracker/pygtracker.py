@@ -49,12 +49,17 @@ class GradeTracker:
         
         assessment_list = ['lab1', 'lab2', 'lab3', 'lab4', 'milestone1', 'milestone2', 'milestone3', 'milestone4', 'feedback', 'quiz1', 'quiz2']
         input_assess=df.iloc[:, 1].tolist()
-        if not set(input_assesss).issubset(assessment_list):
+        if not set(input_assess).issubset(assessment_list):
             error_input = [x for x in input_assess if x not in assessment_list]
             raise ValueError(f"Oops, your dataframe has non-MDS assessment(s) {str(error_input)[1:-1]}")
         
-        if sum(df.iloc[:, 2]<0)>0 or sum(df.iloc[:, 2] >1)>0:
-            raise ValueError('The weights in your dataframe should be between 0 and 1 (inclusive)')
+        for _, w in df.weight.items():
+            if w<0 or w>1:
+                raise ValueError(f'One of the weight={w}, which is not within the range 0 to 1.')
+            
+        for course_id, sum_weight in df.groupby('course_id').sum('weight').weight.items():
+            if sum_weight != 1:
+                raise ValueError(f'The sum of weights of DSCI {course_id} should be 1.')
 
 
         self.courses=df.pivot_table(index='course_id', columns='assessment_id', values='weight',fill_value=0).reset_index()
