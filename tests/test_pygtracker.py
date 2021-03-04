@@ -6,6 +6,23 @@ def test_version():
     
 # Start tests for register_courses
 
+def test_register_courses_course_id_valid():
+    tracker=pygtracker.GradeTracker()
+    df=pd.DataFrame()
+    df['course_id']=[555]
+    df['assessment_id']=['lab4']
+    df['weight']=1
+
+    with raises(ValueError):
+        tracker.record_grades(df)
+
+def test_register_courses_weights_valid():
+    tracker=pygtracker.GradeTracker()
+    df=pd.DataFrame({'course_id': 522, "assessment_id": 'lab5', 'weight': 1})
+    with raises(ValueError):
+        tracker.record_grades(df)
+
+def test_register_courses_course_id_valid
 # End tests for register_courses
 
 # Start tests for record_grades
