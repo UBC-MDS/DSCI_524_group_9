@@ -101,17 +101,12 @@ class GradeTracker:
         for _, g in df.grade.items():
             if g<0 or g>100:
                 raise ValueError(f'One of the grade={g}, which is not valid to be 0 to 100 (inclusive).')
-                
-        if not set(['course_id', 'student_id', 'assessment_id', 'grade']).issubset(df.columns.tolist()):
-            raise TypeError('You input dataframe does not contain right column names as column_id, assessment_id, student_id and grade')
             
             
         self.grades = df.pivot_table(index=['course_id','student_id'], columns='assessment_id', values='grade',fill_value=0).reset_index()
         self.grades.columns.name=None
         self.grades.course_id=self.grades.course_id.astype(str)    
-
-
-        return None
+        
 
     def generate_course_statistics(self, course_ids):
         """

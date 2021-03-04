@@ -78,10 +78,11 @@ def test_record_grade_grade_valid():
     df['course_id']=[511, 511, 511, 511,]
     df['assessment_id']=['lab4', 'lab2', 'lab1', 'lab3']
     df['grade']=[100.1, -77, 99, 88.4]
-    df['student_id']=['elina']
+    df['student_id']=['elina', 'qiqi', 'william', 'piggy']
 
     with raises(ValueError):
         tracker.record_grades(df)
+
 
 
 
