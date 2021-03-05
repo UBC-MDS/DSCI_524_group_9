@@ -101,7 +101,17 @@ def test_record_grades_assess_invalid():
 def test_record_grades_grade_invalid_negative():
     tracker = pygtracker.GradeTracker()
     df = generate_df_record_grade(
-        [511], ["xiran"], ["lab4", "lab2", "lab1", "lab3"], [100.1, -77, 99, 88.4]
+        [511], ["xiran"], ["lab4", "lab2", "lab1", "lab3"], [100.0, -77, 99, 88.4]
+    )
+
+    with raises(ValueError):
+        tracker.record_grades(df)
+
+
+def test_record_grades_grade_invalid_over_100():
+    tracker = pygtracker.GradeTracker()
+    df = generate_df_record_grade(
+        [511], ["kevin"], ["lab4", "lab2", "lab1", "lab3"], [100.1, 77, 99, 88.4]
     )
 
     with raises(ValueError):
