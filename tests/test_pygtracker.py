@@ -59,7 +59,7 @@ def test_rank_students_course_input_not_integer():
         gradetracker.rank_students(course_id=511)
 
 
-# dataframe is equal to an example dataframe - when if statement is False
+# dataframe is equal to an example dataframe when running for 1 course
 def test_rank_students_one_course_df_equal():
     tracker = generate_input_calculate_final_grade()
     rank_df = tracker.rank_students(course_id="511", n=1, ascending=False)
