@@ -38,7 +38,102 @@ $ pip install -i https://test.pypi.org/simple/ pygtracker
 
 ## Usage
 
-- TODO
+A toy dataset is used to showcase the usage of the functions. Any csv file containing the grades and courses for the UBC MDS program may be used. 
+
+```python
+# import package 
+from pygtracker import pygtracker 
+import os 
+
+# call an instance of the class
+tracker = pygtracker.GradeTracker()
+
+# read in the toy dataset 
+courses = pd.read_csv(os.path.join(".", "tests", "test_data", "course_info.csv"))
+grades = pd.read_csv(os.path.join(".", "tests", "test_data", "student_info.csv"))
+
+# read and stores data as a dataframe 
+tracker.register_courses(courses)
+tracker.record_grades(grades)
+```
+
+```python
+# generates a dataframe with summary statistics for a specified course 
+tracker.generate_course_statistics(["511"])
+
+# output 
+pd.DataFrame(
+        np.array([["511",  87.87, 86.91, 88.0, 88.96]]),
+        columns=[
+            "course_id",
+            "mean",
+            "1st-quantile",
+            "median",
+            "3rd-quantile"
+        ]
+    )
+```
+```python
+# generates a dataframe for course ranking by grade 
+tracker.rank_courses()
+
+# output 
+pd.DataFrame(
+        np.array([["522", 91.29],["511", 87.87]]),
+        columns=[
+            "course_id",
+            "grade"
+        ]
+    )
+```
+
+```python 
+# generates a dataframe with student ranking by grade 
+tracker.rank_students()
+
+# output
+pd.DataFrame(
+        np.array([
+            ["joel", 91.81, 1.0],
+            ["tom", 90.09, 2.0],
+            ["mike", 88.29, 3.0]
+            ]),
+        columns=[
+            "student_id",
+            "grade",
+            "rank"
+        ]
+    )
+```
+```python
+# calculates the adjustment for a course for a specified benchmark 
+tracker.suggest_grade_adjustment("511", benchmark_course=100)
+
+# output
+pd.DataFrame(
+        np.array([
+            ["511", "joel", 0, 100, 100, 100, 100, 0, 0, 0, 0, 100, 100],
+            ["511", "mike", 0, 100, 100, 100, 100, 0, 0, 0, 0, 100, 100],
+            ["511", "tiff", 0, 100, 100, 100, 100, 0, 0, 0, 0, 100, 100],
+            ["511", "tom", 0, 100, 100, 100, 100, 0, 0, 0, 0, 100, 100]
+            ]),
+        columns=[
+            "course_id",
+            "student_id",
+            "feedback",
+            "lab1",
+            "lab2",
+            "lab3",
+            "lab4",
+            "milestone1",
+            "milestone2",
+            "milestone3",
+            "milestone4",
+            "quiz1",
+            "quiz2"
+        ]
+    )
+```
 
 ## Documentation
 
