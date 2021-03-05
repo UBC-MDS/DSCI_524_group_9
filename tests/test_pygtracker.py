@@ -61,6 +61,12 @@ def test_generate_course_statistics_equal():
     assert (
         round(statistics.iloc[1, 3], 2) == 90.86
     ), "The value of median is miscalculated."
+    assert (
+        round(statistics.iloc[0, 2], 2) == 86.91
+    ), "The value of 1st-quantile is miscalculated."
+    assert (
+        round(statistics.iloc[1, 4], 2) == 93.48
+    ), "The value of 3rd-quantile is miscalculated."
 
 
 def test_generate_course_statistics_output_match():
