@@ -2,6 +2,55 @@
 import numpy as np
 import pandas as pd
 
+assessment_list = [
+    "lab1",
+    "lab2",
+    "lab3",
+    "lab4",
+    "milestone1",
+    "milestone2",
+    "milestone3",
+    "milestone4",
+    "feedback",
+    "quiz1",
+    "quiz2",
+]
+
+course_list = [
+    511,
+    512,
+    513,
+    521,
+    522,
+    523,
+    524,
+    525,
+    531,
+    532,
+    541,
+    542,
+    551,
+    552,
+    553,
+    554,
+    561,
+    562,
+    563,
+    571,
+    572,
+    573,
+    574,
+    575,
+    591,
+]
+
+
+def check_in_mds(ids, mds_list):
+    """
+    a helper function to check if the input(s) are MDS assessments or courses.
+    """
+    return set(ids).issubset(mds_list)
+
 
 class GradeTracker:
     """
@@ -42,56 +91,17 @@ class GradeTracker:
         -------
         None
         """
-        course_list = [
-            511,
-            512,
-            513,
-            521,
-            522,
-            523,
-            524,
-            525,
-            531,
-            532,
-            541,
-            542,
-            551,
-            552,
-            553,
-            554,
-            561,
-            562,
-            563,
-            571,
-            572,
-            573,
-            574,
-            575,
-            591,
-        ]
+
         input_courses = df.course_id.tolist()
-        if not set(input_courses).issubset(course_list):
+        if not check_in_mds(input_courses, course_list):
             error_input = [x for x in input_courses if x not in course_list]
             raise ValueError(
                 "Oops, your dataframe has non-MDS Course(s) DSCI "
                 + str(error_input)[1:-1]
             )
 
-        assessment_list = [
-            "lab1",
-            "lab2",
-            "lab3",
-            "lab4",
-            "milestone1",
-            "milestone2",
-            "milestone3",
-            "milestone4",
-            "feedback",
-            "quiz1",
-            "quiz2",
-        ]
         input_assess = df.iloc[:, 1].tolist()
-        if not set(input_assess).issubset(assessment_list):
+        if not check_in_mds(input_assess, assessment_list):
             error_input = [x for x in input_assess if x not in assessment_list]
             raise ValueError(
                 f"Oops, your dataframe has non-MDS assessment(s) {str(error_input)[1:-1]}"
@@ -132,57 +142,17 @@ class GradeTracker:
         -------
         None
         """
-        course_list = [
-            511,
-            512,
-            513,
-            521,
-            522,
-            523,
-            524,
-            525,
-            531,
-            532,
-            541,
-            542,
-            551,
-            552,
-            553,
-            554,
-            561,
-            562,
-            563,
-            571,
-            572,
-            573,
-            574,
-            575,
-            591,
-        ]
 
         input_courses = df.course_id.tolist()
-        if not set(input_courses).issubset(course_list):
+        if not check_in_mds(input_courses, course_list):
             error_input = [x for x in input_courses if x not in course_list]
             raise ValueError(
                 "Oops, your dataframe has non-MDS Course(s) DSCI "
                 + str(error_input)[1:-1]
             )
 
-        assessment_list = [
-            "lab1",
-            "lab2",
-            "lab3",
-            "lab4",
-            "milestone1",
-            "milestone2",
-            "milestone3",
-            "milestone4",
-            "feedback",
-            "quiz1",
-            "quiz2",
-        ]
         input_assess = df.assessment_id.tolist()
-        if not set(input_assess).issubset(assessment_list):
+        if not check_in_mds(input_assess, assessment_list):
             error_input = [x for x in input_assess if x not in assessment_list]
             raise ValueError(
                 f"Oops, your dataframe has non-MDS assessment(s) {str(error_input)[1:-1]}"
