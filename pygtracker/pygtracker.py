@@ -123,25 +123,28 @@ class GradeTracker:
         DataFrame
             A dataframe containing the rank of students by average grade:
                 student_id: str
-                rank: int
+                rank: float
                 grade: float
         """
         # check if ascending is a boolean
         if not isinstance(ascending, bool):
             raise TypeError("Ascending value should be a boolean.")
-            # check if course id is a string
+        # check if course id is a string
         if not isinstance(course_id, str):
             raise TypeError("Course id should be a string.")
-            # check if n is an integer and is less than the total
+        # check if n is an integer and is less than the total
         if not isinstance(n, int):
             raise TypeError("N value should be a integer.")
+        # check that the number of students is a positive number
+        if not n >= 0:
+            raise ValueError("N value should be a positive number greater than zero")
 
         # call helper function and get the dataframe
         course_and_grade_df = self.calculate_final_grade(
             self.courses["course_id"].unique().tolist()
         )
 
-        # check if course_id is part of courses list - need to comment when self.courses in
+        # check if course_id is part of courses list
         if not (
             course_id in (course_and_grade_df["course_id"].unique().tolist() + ["all"])
         ):
@@ -170,10 +173,10 @@ class GradeTracker:
             ]
             # sort the values
             ranking = filtered.drop(columns="course_id").sort_values(
-                by="grade", ascending=False
+                by="grade", ascending=ascending
             )
             # add a rank column
-            ranking["rank"] = ranking["grade"].rank(ascending=False)
+            ranking["rank"] = ranking["grade"].rank(ascending=ascending)
             # filter by number of students
             final_ranking = ranking.head(n)
 

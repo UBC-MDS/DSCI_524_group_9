@@ -34,26 +34,29 @@ def test_rank_students_num_of_students_match():
     assert (tracker.rank_students(n=4).shape[0]) == 4, "Number of students don't match"
 
 
-# raises an error when a course id is not a part of the dataset
-def test_rank_students_course_input_not_exist():
+# raises an error when the number of students is negative
+def test_rank_students_num_of_students_negative():
     tracker = generate_input_calculate_final_grade()
     with raises(ValueError):
-        tracker.rank_students(course_id="500", n=4)
+        tracker.rank_students(n=-4)
 
 
+# raises an error when the ascending arguemnt is not a boolean
 def test_rank_students_ascending_input_not_bool():
     gradetracker = pygtracker.GradeTracker()
     with raises(TypeError):
         gradetracker.rank_students(course_id="511", ascending="True")
 
 
+# raise an error when the number of students is not an integer
 def test_rank_students_n_input_not_integer():
     gradetracker = pygtracker.GradeTracker()
     with raises(TypeError):
         gradetracker.rank_students(n="4")
 
 
-def test_rank_students_course_input_not_integer():
+# raise an error with the course input is not a string
+def test_rank_students_course_input_not_string():
     gradetracker = pygtracker.GradeTracker()
     with raises(TypeError):
         gradetracker.rank_students(course_id=511)
@@ -83,14 +86,13 @@ def test_rank_students_all_courses_df_equal():
     assert_frame_equal(rank_df, example_df)
 
 
-# check the columns of the dataframe that come of the function
-def test_rank_students_columns_names_match():
+# output of grades dataframe should only have values between 1 - 100
+def test_rank_students_grade_result_between_0_100():
     tracker = generate_input_calculate_final_grade()
-    # df = tracker.calculate_final_grade(["511", "522"])
-    columns_list = tracker.rank_students(course_id="511", n=1).columns
-    assert columns_list[0] == "student_id"
-    assert columns_list[1] == "grade"
-    assert columns_list[2] == "rank"
+    rank_df = tracker.rank_students(course_id="all", n=1, ascending=False)
+    assert (
+        True if 0 <= rank_df["grade"][0] <= 100 else False
+    ), "Grade is not between 0 and 100"
 
 
 # End tests for rank_students
