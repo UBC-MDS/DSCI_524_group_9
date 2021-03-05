@@ -38,10 +38,10 @@ $ pip install -i https://test.pypi.org/simple/ pygtracker
 
 ## Usage
 
-A toy dataset is used to showcase the usage of the functions. Any csv file containing the grades and courses for the UBC MDS program may be used. 
+A [toy dataset](https://github.com/UBC-MDS/pygtracker/tree/main/tests/test_data) is used to showcase the usage of the functions. Any csv file containing the grades and courses for the UBC MDS program may be used. 
 
 ```python
-# import package 
+# import packages 
 from pygtracker import pygtracker 
 import os 
 
