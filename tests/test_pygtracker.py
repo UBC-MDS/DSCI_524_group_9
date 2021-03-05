@@ -34,7 +34,7 @@ def test_generate_course_statistics_input_not_str():
     """
     Test the input course_ids is a list of strings
     """
-    tracker = pygtracker.GradeTracker()
+    tracker = generate_input_calculate_final_grade()
     with raises(TypeError):
         tracker.generate_course_statistics(course_ids=[True, "511"])
 
@@ -43,7 +43,7 @@ def test_generate_course_statistics_course_id_not_list_of_string():
     """
     Test the dtype of course_ids is a list
     """
-    tracker = pygtracker.GradeTracker()
+    tracker = generate_input_calculate_final_grade()
     with raises(TypeError):
         tracker.generate_course_statistics(course_ids="511")
 
@@ -82,11 +82,11 @@ def test_generate_course_statistics_output_match():
 # End tests for generate_course_statistics
 
 # Start tests for rank_courses
-def test_rank_courses_input_method_type():
+def test_rank_courses_descending_type():
     """
-    Test the dtype of method is str
+    Test the dtype of descending is bool
     """
-    tracker = pygtracker.GradeTracker()
+    tracker = generate_input_calculate_final_grade()
     with raises(TypeError):
         tracker.rank_courses(descending=1)
 
@@ -96,7 +96,7 @@ def test_rank_courses_input_method():
     Test the value of method is one of the four possible options: "mean", 
     "1st-quantile", "median", "3rd-quantile"
     """
-    tracker = pygtracker.GradeTracker()
+    tracker = generate_input_calculate_final_grade()
     with raises(ValueError):
         tracker.rank_courses(method="avg")
 
