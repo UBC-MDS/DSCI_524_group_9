@@ -6,16 +6,190 @@ import numpy as np
 from pandas._testing import assert_frame_equal, assert_series_equal
 
 
-
 def test_version():
     assert __version__ == "0.1.0"
 
 
 # Start tests for register_courses
 
+
+def test_register_courses_course_id_invalid():
+    tracker = pygtracker.GradeTracker()
+    df = generate_df_register_courses([555], ["lab1"], [1])
+
+    with raises(ValueError):
+        tracker.register_courses(df)
+
+
+def test_register_courses_assess_invalid():
+    tracker = pygtracker.GradeTracker()
+    df = generate_df_register_courses([522], ["lab5"], [1])
+
+    with raises(ValueError):
+        tracker.register_courses(df)
+
+
+def test_register_courses_weight_invalid_not_sum_to_one():
+    tracker = pygtracker.GradeTracker()
+    df = generate_df_register_courses(
+        [511],
+        ["lab4", "lab2", "lab1", "lab3"],
+        [
+            0.2,
+            0.3,
+            0.4,
+            0.2,
+        ],
+    )
+
+    with raises(ValueError):
+        tracker.register_courses(df)
+
+
+def test_register_courses_weight_invalid_negative():
+    tracker = pygtracker.GradeTracker()
+    df = generate_df_register_courses(
+        [523], ["lab4", "lab2", "lab1", "lab3"], [-0.5, 0.2, 0.7, 0.6]
+    )
+
+    with raises(ValueError):
+        tracker.register_courses(df)
+
+
+def test_register_courses_expected_df():
+    tracker = pygtracker.GradeTracker()
+    df = generate_df_register_courses(
+        [523],
+        ["lab1", "lab2", "lab3", "lab4", "quiz1", "quiz2"],
+        [0.15, 0.15, 0.15, 0.15, 0.2, 0.2],
+    )
+    tracker.register_courses(df)
+
+    res_df = generate_df_register_courses_output(
+        [523],
+        ["lab1", "lab2", "lab3", "lab4", "quiz1", "quiz2"],
+        [0.15, 0.15, 0.15, 0.15, 0.2, 0.2],
+    )
+
+    assert_frame_equal(tracker.courses, res_df)
+
+
 # End tests for register_courses
 
 # Start tests for record_grades
+
+
+def test_record_grades_course_id_invalid():
+    tracker = pygtracker.GradeTracker()
+    df = generate_df_record_grade([577], ["lab2"], [99.1], ["vaden"])
+
+    with raises(ValueError):
+        tracker.record_grades(df)
+
+
+def test_record_grades_assess_invalid():
+    tracker = pygtracker.GradeTracker()
+    df = generate_df_record_grade([571], ["lab6"], [100], ["selina"])
+
+    with raises(ValueError):
+        tracker.record_grades(df)
+
+
+def test_record_grades_grade_invalid_negative():
+    tracker = pygtracker.GradeTracker()
+    df = generate_df_record_grade(
+        [511], ["xiran"], ["lab4", "lab2", "lab1", "lab3"], [100.1, -77, 99, 88.4]
+    )
+
+    with raises(ValueError):
+        tracker.record_grades(df)
+
+
+def test_record_grades_expected_df():
+    tracker = pygtracker.GradeTracker()
+    df = generate_df_record_grade(
+        [552],
+        ["fiona"],
+        ["lab1", "lab2", "lab3", "lab4", "quiz1", "quiz2"],
+        [66.6, 88.8, 77.7, 99.9, 90.9, 67.89],
+    )
+
+    tracker.record_grades(df)
+    grade_df = generate_df_record_grades_output(
+        [552],
+        ["fiona"],
+        ["lab1", "lab2", "lab3", "lab4", "quiz1", "quiz2"],
+        [66.6, 88.8, 77.7, 99.9, 90.9, 67.89],
+    )
+
+    assert_frame_equal(tracker.grades, grade_df)
+
+
+# 4 helper functions to generate dummy input and output df
+
+
+def generate_df_register_courses(course_id, assessment_id, weight):
+    """
+    generate dummy data frame with the input of course id, assessment id and corresponding weights.
+    each argument should be a list
+    """
+    df = pd.DataFrame(
+        {
+            "course_id": course_id * len(weight),
+            "assessment_id": assessment_id,
+            "weight": weight,
+        }
+    )
+    return df
+
+
+def generate_df_register_courses_output(course_id, assessment_id, weight):
+    """
+    create a dummy data frame as the expected format stored in course attribute.
+    each argument should be a list
+    """
+
+    w = np.reshape(weight, (-1, len(assessment_id)))
+    c = np.reshape(course_id, (-1, 1))
+    df = pd.DataFrame(data=np.hstack((c, w)), columns=["course_id"] + assessment_id)
+
+    df.course_id = df.course_id.astype(int)
+    df.course_id = df.course_id.astype(str)
+    return df
+
+
+def generate_df_record_grade(course_id, student_id, assessment_id, grade):
+    """
+    generate dummy data frame with the input of course id, student id, assessment id and corresponding grades.
+    each argument should be a list
+    """
+    df = pd.DataFrame(
+        {
+            "course_id": course_id * len(grade),
+            "student_id": student_id * len(grade),
+            "assessment_id": assessment_id,
+            "grade": grade,
+        }
+    )
+    return df
+
+
+def generate_df_record_grades_output(course_id, student_id, assessment_id, grade):
+    """
+    create a dummy data frame as the expected format stored in grade attribute.
+    each argument should be a list
+    """
+    g = np.reshape(grade, (-1, len(assessment_id)))
+    c = np.reshape(course_id, (-1, 1))
+    s = np.reshape(student_id, (-1, 1))
+
+    df = pd.DataFrame(
+        data=np.hstack((c, s, g)),
+        columns=["course_id", "student_id"] + assessment_id,
+    )
+    df[assessment_id] = df[assessment_id].astype(float)
+    return df
+
 
 # End tests for record_grades
 
@@ -100,7 +274,7 @@ def test_rank_courses_descending_type():
 
 def test_rank_courses_input_method():
     """
-    Test the value of method is one of the four possible options: "mean", 
+    Test the value of method is one of the four possible options: "mean",
     "1st-quantile", "median", "3rd-quantile"
     """
     tracker = generate_input_calculate_final_grade()
@@ -110,7 +284,7 @@ def test_rank_courses_input_method():
 
 def test_rank_courses_equal():
     """
-    Test the function rank_courses return the expected results  
+    Test the function rank_courses return the expected results
     """
     tracker = generate_input_calculate_final_grade()
     output_mean = tracker.rank_courses()
