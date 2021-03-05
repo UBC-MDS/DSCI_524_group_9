@@ -358,6 +358,13 @@ def test_rank_students_course_input_not_string():
         gradetracker.rank_students(course_id=511)
 
 
+# raise an error with the course input is not a part of the dataset
+def test_rank_students_course_input_not_exist():
+    tracker = generate_input_calculate_final_grade()
+    with raises(ValueError):
+        tracker.rank_students(course_id="500")
+
+
 # dataframe is equal to an example dataframe when running for 1 course
 def test_rank_students_one_course_df_equal():
     tracker = generate_input_calculate_final_grade()
