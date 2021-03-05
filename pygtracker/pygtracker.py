@@ -82,7 +82,40 @@ class GradeTracker:
                 median: float
                 3rd-quantile: float
         """
-        return None
+
+        course_list = list(self.courses["course_id"])
+
+        # check input type
+        if type(course_ids) != list:
+            raise TypeError("course_ids should be a list of str")
+
+        for i in range(len(course_ids)):
+            if type(course_ids[i]) != str:
+                raise TypeError("course_ids should be a list of str")
+
+        # check input existence
+        if set(course_ids).issubset(set(course_list)) == False:
+            error_input = [x for x in course_ids if x not in course_list]
+            raise ValueError("Course(s) " + ",".join(error_input) + " doesn't exit.")
+
+        final_grade = self.calculate_final_grade(course_ids)
+
+        statistics = list()
+
+        for course in course_ids:
+            course_grade = final_grade[final_grade["course_id"] == course]["grade"]
+            course_statistics = {
+                "course_id": course,
+                "mean": course_grade.mean(),
+                "1st-quantile": course_grade.quantile(q=0.25),
+                "median": course_grade.median(),
+                "3rd-quantile": course_grade.quantile(q=0.75),
+            }
+            statistics.append(course_statistics)
+
+        statistics_summary = pd.DataFrame(statistics)
+
+        return statistics_summary
 
     def rank_courses(self, method="mean", descending=True):
         """
@@ -100,10 +133,29 @@ class GradeTracker:
         DataFrame
             A dataframe containing the rank for specified courses:
                 course_id: str
-                rank: int
                 grade: float
         """
-        return None
+
+        # check input type
+        if type(descending) != bool:
+            raise TypeError("descending should be a boolean value")
+
+        possible_method = ["mean", "1st-quantile", "median", "3rd-quantile"]
+        if method not in possible_method:
+            raise ValueError(
+                "method only accepts 'mean', '1st-quantile', 'median' or '3rd-quantile'"
+            )
+
+        course_list = list(self.courses["course_id"])
+
+        course_rank_df = pd.DataFrame()
+
+        course_rank_df = self.generate_course_statistics(course_list)[
+            ["course_id", method]
+        ].sort_values(by=method, ascending=(not descending))
+        course_rank_df.columns = ["course_id", "grade"]
+
+        return course_rank_df
 
     def rank_students(self, course_id="all", n=3, ascending=False):
         """
