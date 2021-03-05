@@ -60,80 +60,41 @@ tracker.record_grades(grades)
 ```python
 # generates a dataframe with summary statistics for a specified course 
 tracker.generate_course_statistics(["511"])
-
-# output 
-pd.DataFrame(
-        np.array([["511",  87.87, 86.91, 88.0, 88.96]]),
-        columns=[
-            "course_id",
-            "mean",
-            "1st-quantile",
-            "median",
-            "3rd-quantile"
-        ]
-    )
 ```
+|    |   course_id |   mean |   1st-quantile |   median |   3rd-quantile |
+|---:|------------:|-------:|---------------:|---------:|---------------:|
+|  0 |         511 |  87.87 |          86.91 |       88 |          88.96 |
+
 ```python
 # generates a dataframe for course ranking by grade 
 tracker.rank_courses()
-
-# output 
-pd.DataFrame(
-        np.array([["522", 91.29],["511", 87.87]]),
-        columns=[
-            "course_id",
-            "grade"
-        ]
-    )
 ```
+|    |   course_id |   grade |
+|---:|------------:|--------:|
+|  0 |         522 |   91.29 |
+|  1 |         511 |   87.87 |
 
 ```python 
 # generates a dataframe with student ranking by grade 
 tracker.rank_students()
-
-# output
-pd.DataFrame(
-        np.array([
-            ["joel", 91.81, 1.0],
-            ["tom", 90.09, 2.0],
-            ["mike", 88.29, 3.0]
-            ]),
-        columns=[
-            "student_id",
-            "grade",
-            "rank"
-        ]
-    )
 ```
+|    | student_id   |   grade |   rank   |
+|---:|:-------------|--------:|---------:|
+|  0 | joel         |   91.81 |      1.0 |
+|  1 | tom          |   90.09 |      2.0 |
+|  2 | mike         |   88.29 |      3.0 |
+
 ```python
 # calculates the adjustment for a course for a specified benchmark 
 tracker.suggest_grade_adjustment("511", benchmark_course=100)
-
-# output
-pd.DataFrame(
-        np.array([
-            ["511", "joel", 0, 100, 100, 100, 100, 0, 0, 0, 0, 100, 100],
-            ["511", "mike", 0, 100, 100, 100, 100, 0, 0, 0, 0, 100, 100],
-            ["511", "tiff", 0, 100, 100, 100, 100, 0, 0, 0, 0, 100, 100],
-            ["511", "tom", 0, 100, 100, 100, 100, 0, 0, 0, 0, 100, 100]
-            ]),
-        columns=[
-            "course_id",
-            "student_id",
-            "feedback",
-            "lab1",
-            "lab2",
-            "lab3",
-            "lab4",
-            "milestone1",
-            "milestone2",
-            "milestone3",
-            "milestone4",
-            "quiz1",
-            "quiz2"
-        ]
-    )
 ```
+|    |   course_id | student_id   |   feedback |   lab1 |   lab2 |   lab3 |   lab4 |   milestone1 |   milestone2 |   milestone3 |   milestone4 |   quiz1 |   quiz2 |
+|---:|------------:|:-------------|-----------:|-------:|-------:|-------:|-------:|-------------:|-------------:|-------------:|-------------:|--------:|--------:|
+|  0 |         511 | joel         |          0 |    100 |    100 |    100 |    100 |            0 |            0 |            0 |            0 |     100 |     100 |
+|  1 |         511 | mike         |          0 |    100 |    100 |    100 |    100 |            0 |            0 |            0 |            0 |     100 |     100 |
+|  2 |         511 | tiff         |          0 |    100 |    100 |    100 |    100 |            0 |            0 |            0 |            0 |     100 |     100 |
+|  3 |         511 | tom          |          0 |    100 |    100 |    100 |    100 |            0 |            0 |            0 |            0 |     100 |     100 |
+
 
 ## Documentation
 
