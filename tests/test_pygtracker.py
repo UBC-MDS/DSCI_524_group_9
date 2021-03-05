@@ -129,6 +129,10 @@ def test_record_grades_expected_df():
 
 
 def generate_df_register_courses(course_id, assessment_id, weight):
+    """
+    generate dummy data frame with the input of course id, assessment id and corresponding weights.
+    each argument should be a list
+    """
     df = pd.DataFrame(
         {
             "course_id": course_id * len(weight),
@@ -140,6 +144,10 @@ def generate_df_register_courses(course_id, assessment_id, weight):
 
 
 def generate_df_register_courses_output(course_id, assessment_id, weight):
+    """
+    create a dummy data frame as the expected format stored in course attribute.
+    each argument should be a list
+    """
 
     w = np.reshape(weight, (-1, len(assessment_id)))
     c = np.reshape(course_id, (-1, 1))
@@ -151,6 +159,10 @@ def generate_df_register_courses_output(course_id, assessment_id, weight):
 
 
 def generate_df_record_grade(course_id, student_id, assessment_id, grade):
+    """
+    generate dummy data frame with the input of course id, student id, assessment id and corresponding grades.
+    each argument should be a list
+    """
     df = pd.DataFrame(
         {
             "course_id": course_id * len(grade),
@@ -163,7 +175,10 @@ def generate_df_record_grade(course_id, student_id, assessment_id, grade):
 
 
 def generate_df_record_grades_output(course_id, student_id, assessment_id, grade):
-
+    """
+    create a dummy data frame as the expected format stored in grade attribute.
+    each argument should be a list
+    """
     g = np.reshape(grade, (-1, len(assessment_id)))
     c = np.reshape(course_id, (-1, 1))
     s = np.reshape(student_id, (-1, 1))
