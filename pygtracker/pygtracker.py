@@ -1,6 +1,8 @@
 # Author: Javairia, Jianru, Yanhua and Vu
 import numpy as np
 import pandas as pd
+
+
 class GradeTracker:
     """
     A grade tracker to help UBC MDS lecturers to manage, analyze and adjust students' grades
@@ -40,31 +42,78 @@ class GradeTracker:
         -------
         None
         """
-        course_list=[511, 512, 513, 521, 522, 523, 524, 525, 531, 532, 541, 542, 551, 552, 553, 554, 561, 562, 563, 571, 572, 573, 574, 575, 591]
-        input_courses=df.course_id.tolist()
-        if not set(input_courses).issubset(course_list): 
+        course_list = [
+            511,
+            512,
+            513,
+            521,
+            522,
+            523,
+            524,
+            525,
+            531,
+            532,
+            541,
+            542,
+            551,
+            552,
+            553,
+            554,
+            561,
+            562,
+            563,
+            571,
+            572,
+            573,
+            574,
+            575,
+            591,
+        ]
+        input_courses = df.course_id.tolist()
+        if not set(input_courses).issubset(course_list):
             error_input = [x for x in input_courses if x not in course_list]
-            raise ValueError("Oops, your dataframe has non-MDS Course(s) DSCI " + str(error_input)[1:-1])
-            
-        
-        assessment_list = ['lab1', 'lab2', 'lab3', 'lab4', 'milestone1', 'milestone2', 'milestone3', 'milestone4', 'feedback', 'quiz1', 'quiz2']
-        input_assess=df.iloc[:, 1].tolist()
+            raise ValueError(
+                "Oops, your dataframe has non-MDS Course(s) DSCI "
+                + str(error_input)[1:-1]
+            )
+
+        assessment_list = [
+            "lab1",
+            "lab2",
+            "lab3",
+            "lab4",
+            "milestone1",
+            "milestone2",
+            "milestone3",
+            "milestone4",
+            "feedback",
+            "quiz1",
+            "quiz2",
+        ]
+        input_assess = df.iloc[:, 1].tolist()
         if not set(input_assess).issubset(assessment_list):
             error_input = [x for x in input_assess if x not in assessment_list]
-            raise ValueError(f"Oops, your dataframe has non-MDS assessment(s) {str(error_input)[1:-1]}")
-        
-        for _, w in df.weight.items():
-            if w<0 or w>1:
-                raise ValueError(f'One of the weight={w}, which is not within the range 0 to 1.')
-            
-        for course_id, sum_weight in df.groupby('course_id').sum('weight').weight.items():
+            raise ValueError(
+                f"Oops, your dataframe has non-MDS assessment(s) {str(error_input)[1:-1]}"
+            )
+
+        if sum(df.weight.values < 0) > 0 or sum(df.weight.values > 1) > 0:
+            err_w = [w for _, w in df.weight.items() if w < 0 or w > 1]
+            raise ValueError(
+                f"One of the weight={err_w}, which is not within the range 0 to 1."
+            )
+
+        for course_id, sum_weight in (
+            df.groupby("course_id").sum("weight").weight.items()
+        ):
             if sum_weight != 1:
-                raise ValueError(f'The sum of weights of DSCI {course_id} should be 1.')
+                raise ValueError(f"The sum of weights of DSCI {course_id} should be 1.")
 
-
-        self.courses=df.pivot_table(index='course_id', columns='assessment_id', values='weight',fill_value=0).reset_index()
-        self.courses.columns.name=None
-        self.courses.course_id=self.courses.course_id.astype(str)  
+        self.courses = df.pivot_table(
+            index="course_id", columns="assessment_id", values="weight", fill_value=0
+        ).reset_index()
+        self.courses.columns.name = None
+        self.courses.course_id = self.courses.course_id.astype(str)
 
     def record_grades(self, df):
         """
@@ -83,30 +132,75 @@ class GradeTracker:
         -------
         None
         """
-        course_list=[511, 512, 513, 521, 522, 523, 524, 525, 531, 532, 541, 542, 551, 552, 553, 554, 561, 562, 563, 571, 572, 573, 574, 575, 591]
-        input_courses=df.course_id.tolist()
-        if not set(input_courses).issubset(course_list): 
+        course_list = [
+            511,
+            512,
+            513,
+            521,
+            522,
+            523,
+            524,
+            525,
+            531,
+            532,
+            541,
+            542,
+            551,
+            552,
+            553,
+            554,
+            561,
+            562,
+            563,
+            571,
+            572,
+            573,
+            574,
+            575,
+            591,
+        ]
+        input_courses = df.course_id.tolist()
+        if not set(input_courses).issubset(course_list):
             error_input = [x for x in input_courses if x not in course_list]
-            raise ValueError("Oops, your dataframe has non-MDS Course(s) DSCI " + str(error_input)[1:-1])
-            
-          
-        
-        assessment_list = ['lab1', 'lab2', 'lab3', 'lab4', 'milestone1', 'milestone2', 'milestone3', 'milestone4', 'feedback', 'quiz1', 'quiz2']
-        input_assess=df.assessment_id.tolist()
+            raise ValueError(
+                "Oops, your dataframe has non-MDS Course(s) DSCI "
+                + str(error_input)[1:-1]
+            )
+
+        assessment_list = [
+            "lab1",
+            "lab2",
+            "lab3",
+            "lab4",
+            "milestone1",
+            "milestone2",
+            "milestone3",
+            "milestone4",
+            "feedback",
+            "quiz1",
+            "quiz2",
+        ]
+        input_assess = df.assessment_id.tolist()
         if not set(input_assess).issubset(assessment_list):
             error_input = [x for x in input_assess if x not in assessment_list]
-            raise ValueError(f"Oops, your dataframe has non-MDS assessment(s) {str(error_input)[1:-1]}")
-            
+            raise ValueError(
+                f"Oops, your dataframe has non-MDS assessment(s) {str(error_input)[1:-1]}"
+            )
 
-        for _, g in df.grade.items():
-            if g<0 or g>100:
-                raise ValueError(f'One of the grade={g}, which is not valid to be 0 to 100 (inclusive).')
-            
-            
-        self.grades = df.pivot_table(index=['course_id','student_id'], columns='assessment_id', values='grade',fill_value=0).reset_index()
-        self.grades.columns.name=None
-        self.grades.course_id=self.grades.course_id.astype(str)    
-        
+        if sum(df.grade.values < 0) > 0 or sum(df.grade.values > 100) > 0:
+            err_g = [g for _, g in df.grade.items() if g < 0 or g > 100]
+            raise ValueError(
+                f"One of the grade={err_g}, which is not valid to be 0 to 100 (inclusive)."
+            )
+
+        self.grades = df.pivot_table(
+            index=["course_id", "student_id"],
+            columns="assessment_id",
+            values="grade",
+            fill_value=0,
+        ).reset_index()
+        self.grades.columns.name = None
+        self.grades.course_id = self.grades.course_id.astype(str)
 
     def generate_course_statistics(self, course_ids):
         """
@@ -208,7 +302,7 @@ class GradeTracker:
         metrics = {
             benchmark_course: "Course benchmark",
             benchmark_lab: "Lab benchmark",
-            benchmark_quiz: "Quiz benchmark"
+            benchmark_quiz: "Quiz benchmark",
         }
 
         for benchmark, name in metrics.items():
@@ -218,24 +312,24 @@ class GradeTracker:
             if benchmark < 0 or benchmark > 100:
                 raise ValueError(name + " should be between 0 and 100 (inclusive)")
 
-        adjusted = self.grades[self.grades['course_id'] == course_id].copy()
+        adjusted = self.grades[self.grades["course_id"] == course_id].copy()
 
         # adjust quizzes or labs
         columns = adjusted.columns.values
 
-        for col in ['course_id', 'student_id']:
+        for col in ["course_id", "student_id"]:
             columns = np.delete(columns, np.where(columns == col))
 
         for column in columns:
-                if column.startswith('quiz'):
-                    while adjusted[column].mean() < benchmark_quiz:
-                        adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
-                else:
-                    while adjusted[column].mean() < benchmark_lab:
-                        adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
+            if column.startswith("quiz"):
+                while adjusted[column].mean() < benchmark_quiz:
+                    adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
+            else:
+                while adjusted[column].mean() < benchmark_lab:
+                    adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
 
         # adjust course
-        weights = self.courses[self.courses['course_id'] == course_id]
+        weights = self.courses[self.courses["course_id"] == course_id]
 
         avg_course = (adjusted[columns] @ weights[columns].T).mean()[0]
 
@@ -255,7 +349,7 @@ class GradeTracker:
             # higher than the benchmark
             if avg_course + diff < benchmark_course:
                 # let everyone have 100 marks
-                adjusted[column] =  adjusted[column].apply(lambda x: 100)
+                adjusted[column] = adjusted[column].apply(lambda x: 100)
                 avg_course += diff
             else:
                 # increase gradually until it meets the benchmark
@@ -290,24 +384,26 @@ class GradeTracker:
         grade_col = []
 
         for course_id in course_ids:
-            weights = self.courses[self.courses['course_id'] == course_id]
-            grades = self.grades[self.grades['course_id'] == course_id]
+            weights = self.courses[self.courses["course_id"] == course_id]
+            grades = self.grades[self.grades["course_id"] == course_id]
 
             columns = grades.columns.values
 
-            for col in ['course_id', 'student_id']:
+            for col in ["course_id", "student_id"]:
                 columns = np.delete(columns, np.where(columns == col))
 
-            final_grade = grades[columns] @ weights[columns].T.iloc[:,0]
+            final_grade = grades[columns] @ weights[columns].T.iloc[:, 0]
 
             course_id_col += [course_id] * len(final_grade)
-            student_id_col += grades['student_id'].tolist()
+            student_id_col += grades["student_id"].tolist()
             grade_col += final_grade.tolist()
 
-        result_df = pd.DataFrame({
-            'course_id': course_id_col,
-            'student_id': student_id_col,
-            'grade': grade_col
-            })
+        result_df = pd.DataFrame(
+            {
+                "course_id": course_id_col,
+                "student_id": student_id_col,
+                "grade": grade_col,
+            }
+        )
 
         return result_df

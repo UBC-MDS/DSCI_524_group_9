@@ -107,15 +107,25 @@ def test_record_grades_grade_invalid_negative():
 
 def test_record_grades_expected_df():
     tracker = pygtracker.GradeTracker()
-    df = generate_df_record_grade()
-
-    tracker.record_grades(df)
-    res_df = generate_df_record_grades_output(
+    df = generate_df_record_grade(
         [552],
         ["fiona"],
         ["lab1", "lab2", "lab3", "lab4", "quiz1", "quiz2"],
-        [66.6, 88.8, 77.7, 99.9, 100.0, 67.89],
+        [66.6, 88.8, 77.7, 99.9, 90.9, 67.89],
     )
+
+    tracker.record_grades(df)
+    grade_df = generate_df_record_grades_output(
+        [552],
+        ["fiona"],
+        ["lab1", "lab2", "lab3", "lab4", "quiz1", "quiz2"],
+        [66.6, 88.8, 77.7, 99.9, 90.9, 67.89],
+    )
+
+    assert_frame_equal(tracker.grades, grade_df)
+
+
+# 4 helper functions to generate dummy input and output df
 
 
 def generate_df_register_courses(course_id, assessment_id, weight):
@@ -162,7 +172,7 @@ def generate_df_record_grades_output(course_id, student_id, assessment_id, grade
         data=np.hstack((c, s, g)),
         columns=["course_id", "student_id"] + assessment_id,
     )
-    df.course_id = df.course_id.astype(str)
+    df[assessment_id] = df[assessment_id].astype(float)
     return df
 
 
