@@ -244,30 +244,82 @@ class GradeTracker:
         """
         return None
 
-    def rank_students(self, course_id="all", n=10, descending=True):
+    def rank_students(self, course_id="all", n=3, ascending=False):
         """
         Calculate the average grade for a specified number of students and ranks them in
         ascending/descending order for a specific course or for the entire program completed thus far.
-
         Parameters
         ----------
         course_id: str, default "all"
             The course id for which the ranking is calculated for. Default will provide the ranking for
             the entire program completed thus far.
-        n: int, default 10
+        n: int, default 3
             The number of students to rank.
-        descending: bool, default True
+        ascending: bool, default True
             A boolean value to decide if the rank should be in descending or ascending order.
-
         Returns
         -------
         DataFrame
             A dataframe containing the rank of students by average grade:
                 student_id: str
-                rank: int
+                rank: float
                 grade: float
         """
-        return None
+        # check if ascending is a boolean
+        if not isinstance(ascending, bool):
+            raise TypeError("Ascending value should be a boolean.")
+        # check if course id is a string
+        if not isinstance(course_id, str):
+            raise TypeError("Course id should be a string.")
+        # check if n is an integer and is less than the total
+        if not isinstance(n, int):
+            raise TypeError("N value should be a integer.")
+        # check that the number of students is a positive number
+        if not n >= 0:
+            raise ValueError("N value should be a positive number greater than zero")
+
+        # call helper function and get the dataframe
+        course_and_grade_df = self.calculate_final_grade(
+            self.courses["course_id"].unique().tolist()
+        )
+
+        # check if course_id is part of courses list
+        if not (
+            course_id in (course_and_grade_df["course_id"].unique().tolist() + ["all"])
+        ):
+            raise ValueError("Course ID is not a part of the courses dataset.")
+
+        if course_id == "all":
+            # calculates the mean grade and sorts the values
+            ranking = pd.DataFrame(
+                course_and_grade_df.pivot(
+                    index="course_id", columns="student_id", values="grade"
+                )
+                .mean(axis=0)
+                .sort_values(ascending=ascending)
+            ).reset_index()
+            # renames the column
+            ranking = ranking.rename(columns={0: "grade"})
+            # add a rank column
+            ranking["rank"] = ranking["grade"].rank(ascending=ascending)
+            # filter by number of students
+            final_ranking = ranking.head(n)
+
+        else:
+            # filter based on specified course
+            filtered = course_and_grade_df[
+                course_and_grade_df["course_id"].isin([course_id])
+            ]
+            # sort the values
+            ranking = filtered.drop(columns="course_id").sort_values(
+                by="grade", ascending=ascending
+            )
+            # add a rank column
+            ranking["rank"] = ranking["grade"].rank(ascending=ascending)
+            # filter by number of students
+            final_ranking = ranking.head(n)
+
+        return final_ranking
 
     def suggest_grade_adjustment(
         self, course_id, benchmark_course=90, benchmark_lab=85, benchmark_quiz=85
