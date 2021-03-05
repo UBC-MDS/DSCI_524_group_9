@@ -3,7 +3,8 @@ from pygtracker import pygtracker
 from pytest import raises
 import pandas as pd
 import numpy as np
-from pandas._testing import assert_frame_equal
+from pandas._testing import assert_frame_equal, assert_series_equal
+
 
 
 def test_version():
@@ -195,9 +196,130 @@ def generate_df_record_grades_output(course_id, student_id, assessment_id, grade
 
 # Start tests for generate_course_statistics
 
+
+def test_generate_course_statistics_input_not_exist():
+    """
+    Test the input course_ids are involved in MDS course list
+    """
+    tracker = generate_input_calculate_final_grade()
+    with raises(ValueError):
+        tracker.generate_course_statistics(course_ids=["500", "511"])
+
+
+def test_generate_course_statistics_input_not_str():
+    """
+    Test the input course_ids is a list of strings
+    """
+    tracker = generate_input_calculate_final_grade()
+    with raises(TypeError):
+        tracker.generate_course_statistics(course_ids=[True, "511"])
+
+
+def test_generate_course_statistics_course_id_not_list_of_string():
+    """
+    Test the dtype of course_ids is a list
+    """
+    tracker = generate_input_calculate_final_grade()
+    with raises(TypeError):
+        tracker.generate_course_statistics(course_ids="511")
+
+
+def test_generate_course_statistics_equal():
+    """
+    Test the function generate_course_statistics return the expected
+    results
+    """
+    tracker = generate_input_calculate_final_grade()
+    statistics = tracker.generate_course_statistics(course_ids=["511", "522"])
+    assert (
+        round(statistics.iloc[0, 1], 2) == 87.87
+    ), "The value of mean is miscalculated."
+    assert (
+        round(statistics.iloc[1, 3], 2) == 90.86
+    ), "The value of median is miscalculated."
+    assert (
+        round(statistics.iloc[0, 2], 2) == 86.91
+    ), "The value of 1st-quantile is miscalculated."
+    assert (
+        round(statistics.iloc[1, 4], 2) == 93.48
+    ), "The value of 3rd-quantile is miscalculated."
+
+
+def test_generate_course_statistics_output_match():
+    """
+    Test the function generate_course_statistics return the expected
+    data frame
+    """
+    tracker = generate_input_calculate_final_grade()
+    row_num = len(tracker.generate_course_statistics(course_ids=["511", "522"]))
+    columns_list = tracker.generate_course_statistics(course_ids=["511", "522"]).columns
+    assert columns_list[0] == "course_id", "The first column should be course_id."
+    assert columns_list[1] == "mean", "The second column should be mean."
+    assert columns_list[2] == "1st-quantile", "The third column should be 1st-quantile."
+    assert columns_list[3] == "median", "The fourth column should be median."
+    assert columns_list[4] == "3rd-quantile", "The fifth column should be 3rd-quantile."
+    assert row_num == 2, "The row number should be 2."
+
+
 # End tests for generate_course_statistics
 
 # Start tests for rank_courses
+def test_rank_courses_descending_type():
+    """
+    Test the dtype of descending is bool
+    """
+    tracker = generate_input_calculate_final_grade()
+    with raises(TypeError):
+        tracker.rank_courses(descending=1)
+
+
+def test_rank_courses_input_method():
+    """
+    Test the value of method is one of the four possible options: "mean", 
+    "1st-quantile", "median", "3rd-quantile"
+    """
+    tracker = generate_input_calculate_final_grade()
+    with raises(ValueError):
+        tracker.rank_courses(method="avg")
+
+
+def test_rank_courses_equal():
+    """
+    Test the function rank_courses return the expected results  
+    """
+    tracker = generate_input_calculate_final_grade()
+    output_mean = tracker.rank_courses()
+    output_median = tracker.rank_courses(method="median")
+    assert (
+        round(output_mean.iloc[1]["grade"], 2) == 87.87
+    ), "The value of grade is miscalculated."
+    assert (
+        round(output_median.iloc[0]["grade"], 2) == 90.86
+    ), "The value of grade is miscalculated."
+
+
+def test_rank_courses_order():
+    """
+    Test the argument descending works as expected
+    """
+    tracker = generate_input_calculate_final_grade()
+    assert (
+        tracker.rank_courses(descending=True).iloc[-1, 0] == "511"
+    ), "The order of ranking is incorrect."
+    assert (
+        tracker.rank_courses(descending=False).iloc[0, 0] == "511"
+    ), "The order of ranking is incorrect."
+
+
+def test_rank_courses_columns_names_match():
+    """
+    Test the function rank_courses return the expected data frame
+    """
+    tracker = generate_input_calculate_final_grade()
+    columns_list = tracker.rank_courses().columns
+    assert columns_list[0] == "course_id", "The first column should be course_id."
+    assert columns_list[1] == "grade", "The second column should be grade."
+
 
 # End tests for rank_courses
 
