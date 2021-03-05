@@ -6,7 +6,6 @@ import numpy as np
 from pandas._testing import assert_frame_equal, assert_series_equal
 
 
-
 def test_version():
     assert __version__ == "0.1.0"
 
@@ -275,7 +274,7 @@ def test_rank_courses_descending_type():
 
 def test_rank_courses_input_method():
     """
-    Test the value of method is one of the four possible options: "mean", 
+    Test the value of method is one of the four possible options: "mean",
     "1st-quantile", "median", "3rd-quantile"
     """
     tracker = generate_input_calculate_final_grade()
@@ -285,7 +284,7 @@ def test_rank_courses_input_method():
 
 def test_rank_courses_equal():
     """
-    Test the function rank_courses return the expected results  
+    Test the function rank_courses return the expected results
     """
     tracker = generate_input_calculate_final_grade()
     output_mean = tracker.rank_courses()

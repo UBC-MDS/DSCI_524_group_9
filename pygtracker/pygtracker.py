@@ -159,6 +159,7 @@ class GradeTracker:
             575,
             591,
         ]
+
         input_courses = df.course_id.tolist()
         if not set(input_courses).issubset(course_list):
             error_input = [x for x in input_courses if x not in course_list]
