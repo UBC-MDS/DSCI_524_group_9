@@ -1,6 +1,8 @@
 # Author: Javairia, Jianru, Yanhua and Vu
 import numpy as np
 import pandas as pd
+
+
 class GradeTracker:
     """
     A grade tracker to help UBC MDS lecturers to manage, analyze and adjust students' grades
@@ -103,30 +105,82 @@ class GradeTracker:
         """
         return None
 
-    def rank_students(self, course_id="all", n=10, descending=True):
+    def rank_students(self, course_id="all", n=3, ascending=False):
         """
         Calculate the average grade for a specified number of students and ranks them in
         ascending/descending order for a specific course or for the entire program completed thus far.
-
         Parameters
         ----------
         course_id: str, default "all"
             The course id for which the ranking is calculated for. Default will provide the ranking for
             the entire program completed thus far.
-        n: int, default 10
+        n: int, default 3
             The number of students to rank.
-        descending: bool, default True
+        ascending: bool, default True
             A boolean value to decide if the rank should be in descending or ascending order.
-
         Returns
         -------
         DataFrame
             A dataframe containing the rank of students by average grade:
                 student_id: str
-                rank: int
+                rank: float
                 grade: float
         """
-        return None
+        # check if ascending is a boolean
+        if not isinstance(ascending, bool):
+            raise TypeError("Ascending value should be a boolean.")
+        # check if course id is a string
+        if not isinstance(course_id, str):
+            raise TypeError("Course id should be a string.")
+        # check if n is an integer and is less than the total
+        if not isinstance(n, int):
+            raise TypeError("N value should be a integer.")
+        # check that the number of students is a positive number
+        if not n >= 0:
+            raise ValueError("N value should be a positive number greater than zero")
+
+        # call helper function and get the dataframe
+        course_and_grade_df = self.calculate_final_grade(
+            self.courses["course_id"].unique().tolist()
+        )
+
+        # check if course_id is part of courses list
+        if not (
+            course_id in (course_and_grade_df["course_id"].unique().tolist() + ["all"])
+        ):
+            raise ValueError("Course ID is not a part of the courses dataset.")
+
+        if course_id == "all":
+            # calculates the mean grade and sorts the values
+            ranking = pd.DataFrame(
+                course_and_grade_df.pivot(
+                    index="course_id", columns="student_id", values="grade"
+                )
+                .mean(axis=0)
+                .sort_values(ascending=ascending)
+            ).reset_index()
+            # renames the column
+            ranking = ranking.rename(columns={0: "grade"})
+            # add a rank column
+            ranking["rank"] = ranking["grade"].rank(ascending=ascending)
+            # filter by number of students
+            final_ranking = ranking.head(n)
+
+        else:
+            # filter based on specified course
+            filtered = course_and_grade_df[
+                course_and_grade_df["course_id"].isin([course_id])
+            ]
+            # sort the values
+            ranking = filtered.drop(columns="course_id").sort_values(
+                by="grade", ascending=ascending
+            )
+            # add a rank column
+            ranking["rank"] = ranking["grade"].rank(ascending=ascending)
+            # filter by number of students
+            final_ranking = ranking.head(n)
+
+        return final_ranking
 
     def suggest_grade_adjustment(
         self, course_id, benchmark_course=90, benchmark_lab=85, benchmark_quiz=85
@@ -161,7 +215,7 @@ class GradeTracker:
         metrics = {
             benchmark_course: "Course benchmark",
             benchmark_lab: "Lab benchmark",
-            benchmark_quiz: "Quiz benchmark"
+            benchmark_quiz: "Quiz benchmark",
         }
 
         for benchmark, name in metrics.items():
@@ -171,24 +225,24 @@ class GradeTracker:
             if benchmark < 0 or benchmark > 100:
                 raise ValueError(name + " should be between 0 and 100 (inclusive)")
 
-        adjusted = self.grades[self.grades['course_id'] == course_id].copy()
+        adjusted = self.grades[self.grades["course_id"] == course_id].copy()
 
         # adjust quizzes or labs
         columns = adjusted.columns.values
 
-        for col in ['course_id', 'student_id']:
+        for col in ["course_id", "student_id"]:
             columns = np.delete(columns, np.where(columns == col))
 
         for column in columns:
-                if column.startswith('quiz'):
-                    while adjusted[column].mean() < benchmark_quiz:
-                        adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
-                else:
-                    while adjusted[column].mean() < benchmark_lab:
-                        adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
+            if column.startswith("quiz"):
+                while adjusted[column].mean() < benchmark_quiz:
+                    adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
+            else:
+                while adjusted[column].mean() < benchmark_lab:
+                    adjusted[column] = adjusted[column].apply(lambda x: min(x + 1, 100))
 
         # adjust course
-        weights = self.courses[self.courses['course_id'] == course_id]
+        weights = self.courses[self.courses["course_id"] == course_id]
 
         avg_course = (adjusted[columns] @ weights[columns].T).mean()[0]
 
@@ -208,7 +262,7 @@ class GradeTracker:
             # higher than the benchmark
             if avg_course + diff < benchmark_course:
                 # let everyone have 100 marks
-                adjusted[column] =  adjusted[column].apply(lambda x: 100)
+                adjusted[column] = adjusted[column].apply(lambda x: 100)
                 avg_course += diff
             else:
                 # increase gradually until it meets the benchmark
@@ -243,24 +297,26 @@ class GradeTracker:
         grade_col = []
 
         for course_id in course_ids:
-            weights = self.courses[self.courses['course_id'] == course_id]
-            grades = self.grades[self.grades['course_id'] == course_id]
+            weights = self.courses[self.courses["course_id"] == course_id]
+            grades = self.grades[self.grades["course_id"] == course_id]
 
             columns = grades.columns.values
 
-            for col in ['course_id', 'student_id']:
+            for col in ["course_id", "student_id"]:
                 columns = np.delete(columns, np.where(columns == col))
 
-            final_grade = grades[columns] @ weights[columns].T.iloc[:,0]
+            final_grade = grades[columns] @ weights[columns].T.iloc[:, 0]
 
             course_id_col += [course_id] * len(final_grade)
-            student_id_col += grades['student_id'].tolist()
+            student_id_col += grades["student_id"].tolist()
             grade_col += final_grade.tolist()
 
-        result_df = pd.DataFrame({
-            'course_id': course_id_col,
-            'student_id': student_id_col,
-            'grade': grade_col
-            })
+        result_df = pd.DataFrame(
+            {
+                "course_id": course_id_col,
+                "student_id": student_id_col,
+                "grade": grade_col,
+            }
+        )
 
         return result_df
