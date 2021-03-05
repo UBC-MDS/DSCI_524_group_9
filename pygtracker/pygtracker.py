@@ -145,7 +145,7 @@ class GradeTracker:
         if not (
             course_id in (course_and_grade_df["course_id"].unique().tolist() + ["all"])
         ):
-            raise NameError("Course ID is not a part of the courses dataset.")
+            raise ValueError("Course ID is not a part of the courses dataset.")
 
         if course_id == "all":
             # calculates the mean grade and sorts the values
