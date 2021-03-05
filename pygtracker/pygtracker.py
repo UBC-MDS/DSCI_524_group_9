@@ -389,12 +389,12 @@ class GradeTracker:
 
         adjusted = self.grades[self.grades["course_id"] == course_id].copy()
 
+        # get assessments that belong to this course
+        temp = self.courses[self.courses['course_id'] == course_id].T[1:]
+        temp = temp[temp[0] != 0] # filter assessment with 0
+        columns = list(temp.index.values)
+
         # adjust quizzes or labs
-        columns = adjusted.columns.values
-
-        for col in ["course_id", "student_id"]:
-            columns = np.delete(columns, np.where(columns == col))
-
         for column in columns:
             if column.startswith("quiz"):
                 while adjusted[column].mean() < benchmark_quiz:
@@ -409,8 +409,6 @@ class GradeTracker:
         avg_course = (adjusted[columns] @ weights[columns].T).mean()[0]
 
         for column in columns:
-            print("avg_course", avg_course)
-
             if avg_course >= benchmark_course:
                 break
 

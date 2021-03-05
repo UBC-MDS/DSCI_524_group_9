@@ -1,6 +1,9 @@
 from pygtracker import __version__
 from pygtracker import pygtracker
 from pytest import raises
+
+import os
+
 import pandas as pd
 import numpy as np
 from pandas._testing import assert_frame_equal, assert_series_equal
@@ -675,5 +678,119 @@ def convert_dtypes_to_float(df):
 
     return df
 
-
 # End tests for suggest_grade_adjustments
+
+def test_integration_all_functions():
+    tracker = pygtracker.GradeTracker()
+
+    courses = pd.read_csv(os.path.join(".", "tests", "test_data", "course_info.csv"))
+    grades = pd.read_csv(os.path.join(".", "tests", "test_data", "student_info.csv"))
+
+    tracker.register_courses(courses)
+    tracker.record_grades(grades)
+
+    expected_tracker = generate_input_calculate_final_grade()
+
+    # courses are recorded correctly
+    assert_frame_equal(tracker.courses, expected_tracker.courses[tracker.courses.columns])
+
+    # grades are recorded correctly
+    assert_frame_equal(
+        tracker.grades.sort_values(by=['course_id', 'student_id']),
+        expected_tracker.grades[tracker.grades.columns].sort_values(by=['course_id', 'student_id']).reset_index(drop=True)
+        )
+
+    course_stat = tracker.generate_course_statistics(["511"])
+
+    expected_stat = convert_dtypes_to_float(pd.DataFrame(
+        np.array([["511",  87.87, 86.91, 88.0, 88.96]]),
+        columns=[
+            "course_id",
+            "mean",
+            "1st-quantile",
+            "median",
+            "3rd-quantile"
+        ]
+    ))
+
+    # stats are generated correctly
+    assert_frame_equal(course_stat, expected_stat)
+
+    courses_rank = tracker.rank_courses()
+
+    expected_courses_rank = convert_dtypes_to_float(pd.DataFrame(
+        np.array([["522", 91.29],["511", 87.87]]),
+        columns=[
+            "course_id",
+            "grade"
+        ]
+    ))
+
+    # courses are ranked correctly
+    assert_frame_equal(courses_rank.reset_index(drop=True), expected_courses_rank)
+
+    students_rank = tracker.rank_students()
+
+    expected_students_rank = convert_dtypes_to_float(pd.DataFrame(
+        np.array([
+            ["joel", 91.81, 1.0],
+            ["tom", 90.09, 2.0],
+            ["mike", 88.29, 3.0]
+            ]),
+        columns=[
+            "student_id",
+            "grade",
+            "rank"
+        ]
+    ))
+
+    # students are ranked correctly
+    assert_frame_equal(students_rank, expected_students_rank)
+
+    adj_grades = tracker.suggest_grade_adjustment("511", benchmark_course=100)
+
+    expected_adj_grades = convert_dtypes_to_float(pd.DataFrame(
+        np.array([
+            ["511", "joel", 0, 100, 100, 100, 100, 0, 0, 0, 0, 100, 100],
+            ["511", "mike", 0, 100, 100, 100, 100, 0, 0, 0, 0, 100, 100],
+            ["511", "tiff", 0, 100, 100, 100, 100, 0, 0, 0, 0, 100, 100],
+            ["511", "tom", 0, 100, 100, 100, 100, 0, 0, 0, 0, 100, 100]
+            ]),
+        columns=[
+            "course_id",
+            "student_id",
+            "feedback",
+            "lab1",
+            "lab2",
+            "lab3",
+            "lab4",
+            "milestone1",
+            "milestone2",
+            "milestone3",
+            "milestone4",
+            "quiz1",
+            "quiz2"
+        ]
+    ))
+
+    # grades are adjusted correctly
+    assert_frame_equal(adj_grades, expected_adj_grades)
+
+    final_grades = tracker.calculate_final_grade(["511"])
+
+    expected_final_grades = convert_dtypes_to_float(pd.DataFrame(
+        np.array([
+            ["511", "joel", 90.82],
+            ["511", "mike", 87.66],
+            ["511", "tiff", 88.34],
+            ["511", "tom", 84.66]
+            ]),
+        columns=[
+            "course_id",
+            "student_id",
+            "grade"
+        ]
+    ))
+
+    # final grades are correct
+    assert_frame_equal(final_grades, expected_final_grades)
