@@ -71,7 +71,7 @@ def test_rank_students_one_course_df_equal():
     assert_frame_equal(rank_df, example_df)
 
 
-# dataframe is equal to an example dataframe - when if statement is True
+# dataframe is equal to an example dataframe - when running for all courses
 def test_rank_students_all_courses_df_equal():
     tracker = generate_input_calculate_final_grade()
     rank_df = tracker.rank_students(course_id="all", n=1, ascending=False)
