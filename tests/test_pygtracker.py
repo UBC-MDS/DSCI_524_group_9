@@ -278,7 +278,7 @@ def test_generate_course_statistics_output_match():
 # Start tests for rank_courses
 def test_rank_courses_descending_type():
     """
-    Test the dtype of descending is bool
+    Test the dtype of descending is bool.
     """
     tracker = generate_input_calculate_final_grade()
     with raises(TypeError):
@@ -288,7 +288,7 @@ def test_rank_courses_descending_type():
 def test_rank_courses_input_method():
     """
     Test the value of method is one of the four possible options: "mean",
-    "1st-quantile", "median", "3rd-quantile"
+    "1st-quantile", "median", "3rd-quantile".
     """
     tracker = generate_input_calculate_final_grade()
     with raises(ValueError):
@@ -297,7 +297,7 @@ def test_rank_courses_input_method():
 
 def test_rank_courses_equal():
     """
-    Test the function rank_courses return the expected results
+    Test the function rank_courses return the expected results.
     """
     tracker = generate_input_calculate_final_grade()
     output_mean = tracker.rank_courses()
@@ -312,7 +312,7 @@ def test_rank_courses_equal():
 
 def test_rank_courses_order():
     """
-    Test the argument descending works as expected
+    Test the argument descending works as expected.
     """
     tracker = generate_input_calculate_final_grade()
     assert (
@@ -325,7 +325,7 @@ def test_rank_courses_order():
 
 def test_rank_courses_columns_names_match():
     """
-    Test the function rank_courses return the expected data frame
+    Test the function rank_courses return the expected data frame.
     """
     tracker = generate_input_calculate_final_grade()
     columns_list = tracker.rank_courses().columns

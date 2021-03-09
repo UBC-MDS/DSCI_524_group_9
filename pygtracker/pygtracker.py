@@ -260,7 +260,7 @@ class GradeTracker:
         possible_method = ["mean", "1st-quantile", "median", "3rd-quantile"]
         if method not in possible_method:
             raise ValueError(
-                "method only accepts 'mean', '1st-quantile', 'median' or '3rd-quantile'"
+                "Method only accepts 'mean', '1st-quantile', 'median' or '3rd-quantile'"
             )
 
         course_list = list(self.courses["course_id"])
