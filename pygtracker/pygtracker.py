@@ -54,7 +54,8 @@ def check_in_mds(ids, mds_list):
 
 class GradeTracker:
     """
-    A grade tracker to help UBC MDS lecturers to manage, analyze and adjust students' grades
+    A grade tracker to help UBC MDS lecturers to manage, analyze and adjust
+    students' grades
 
     Parameters
     ----------
@@ -175,17 +176,20 @@ class GradeTracker:
 
     def generate_course_statistics(self, course_ids):
         """
-        Calculate the summary statistics for specified courses including mean, median and quantiles.
+        Calculate the summary statistics for specified courses including mean,
+        median and quantiles.
 
         Parameters
         ----------
         course_ids: list of str
-            A list including all course IDs for which the summary statistics are calculated for.
+            A list including all course IDs for which the summary statistics
+            are calculated for.
 
         Returns
         ----------
         DataFrame
-            A dataframe containing the summary statistics for specified courses:
+            A dataframe containing the summary statistics for specified
+            courses:
                 course_id: str
                 mean: float
                 1st-quantile: float
@@ -229,14 +233,17 @@ class GradeTracker:
 
     def rank_courses(self, method="mean", descending=True):
         """
-        Calculate students' course grades to rank courses in ascending/descending order by a specified method.
+        Calculate students' course grades to rank courses in ascending or
+        descending order by a specified method.
 
         Parameters
         ----------
-        method: {"mean", "1st-quantile", "median", "3rd-quantile"}, default "mean"
+        method: {"mean", "1st-quantile", "median", "3rd-quantile"},
+            `default "mean"
             The method applied to rank the courses.
         descending: bool, default True
-            A boolean value to decide if the rank should be in descending or ascending order.
+            A boolean value to decide if the rank should be in descending or
+            ascending order.
 
         Returns
         -------
@@ -269,17 +276,20 @@ class GradeTracker:
 
     def rank_students(self, course_id="all", n=3, ascending=False):
         """
-        Calculate the average grade for a specified number of students and ranks them in
-        ascending/descending order for a specific course or for the entire program completed thus far.
+        Calculate the average grade for a specified number of students and
+        ranks them in
+        ascending/descending order for a specific course or for the entire
+        program completed thus far.
         Parameters
         ----------
         course_id: str, default "all"
-            The course id for which the ranking is calculated for. Default will provide the ranking for
-            the entire program completed thus far.
+            The course id for which the ranking is calculated for. Default
+            will provide the ranking for the entire program completed thus far.
         n: int, default 3
             The number of students to rank.
         ascending: bool, default True
-            A boolean value to decide if the rank should be in descending or ascending order.
+            A boolean value to decide if the rank should be in descending
+            or ascending order.
         Returns
         -------
         DataFrame
@@ -348,24 +358,29 @@ class GradeTracker:
         self, course_id, benchmark_course=90, benchmark_lab=85, benchmark_quiz=85
     ):
         """
-        Suggest grade adjustment for a particular course based on predefined benchmarks
-        to make sure the final grade meets or exceeds these benchmarks.
+        Suggest grade adjustment for a particular course based on predefined
+        benchmarks to make sure the final grade meets or exceeds these
+        benchmarks.
 
         Parameters
         ----------
         course_id: str
             The id of the course to be adjusted.
         benchmark_course: float, default 90
-            The benchmark of which the average grade for the whole course must meet or exceed.
+            The benchmark of which the average grade for the whole course must
+            meet or exceed.
         benchmark_lab: float, default 85
-            The benchmark of which the average grade for each lab must meet or exceed.
+            The benchmark of which the average grade for each lab must
+            meet or exceed.
         benchmark_quiz: float, default 85
-            The benchmark of which the average grade for each quiz must meet or exceed.
+            The benchmark of which the average grade for each quiz must
+            meet or exceed.
 
         Returns
         -------
         DataFrame
-            A dataframe containing newly adjusted grades for students in a course:
+            A dataframe containing newly adjusted grades for students
+            in a course:
                 student_id: str
                 assessment1: float
                 assessment2: float
@@ -390,8 +405,8 @@ class GradeTracker:
         adjusted = self.grades[self.grades["course_id"] == course_id].copy()
 
         # get assessments that belong to this course
-        temp = self.courses[self.courses['course_id'] == course_id].T[1:]
-        temp = temp[temp[0] != 0] # filter assessment with 0
+        temp = self.courses[self.courses["course_id"] == course_id].T[1:]
+        temp = temp[temp[0] != 0]  # filter assessment with 0
         columns = list(temp.index.values)
 
         # adjust quizzes or labs
@@ -441,7 +456,8 @@ class GradeTracker:
         Parameters
         ----------
         course_ids: list of str
-            The ids of the courses to calculate the average grade for all students.
+            The ids of the courses to calculate the average grade
+            for all students.
 
         Returns
         -------
