@@ -208,7 +208,7 @@ class GradeTracker:
                 raise TypeError("course_ids should be a list of str")
 
         # check input existence
-        if set(course_ids).issubset(set(course_list)) == False:
+        if set(course_ids).issubset(set(course_list)) is False:
             error_input = [x for x in course_ids if x not in course_list]
             raise ValueError("Course(s) " + ",".join(error_input) + " doesn't exit.")
 
