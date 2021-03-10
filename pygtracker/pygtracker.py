@@ -277,9 +277,9 @@ class GradeTracker:
     def rank_students(self, course_id="all", n=3, ascending=False):
         """
         Calculate the average grade for a specified number of students and
-        ranks them in
-        ascending/descending order for a specific course or for the entire
+        ranks them in ascending/descending order for a specific course or for the entire
         program completed thus far.
+
         Parameters
         ----------
         course_id: str, default "all"
