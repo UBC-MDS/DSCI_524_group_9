@@ -138,7 +138,7 @@ latex_documents = [
 # (source start file, name, description, authors, manual section).
 man_pages = [
     (master_doc, 'pygtracker',
-     u'pygtracker Documentation',
+     'pygtracker Documentation',
      [author], 1)
 ]
 
@@ -150,7 +150,7 @@ man_pages = [
 #  dir menu entry, description, category)
 texinfo_documents = [
     (master_doc, 'pygtracker',
-     u'pygtracker Documentation',
+     'pygtracker Documentation',
      author,
      'pygtracker',
      'One line description of project.',
