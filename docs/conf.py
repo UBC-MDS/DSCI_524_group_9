@@ -20,6 +20,7 @@
 # import pygtracker
 import os
 import sys
+import pygtracker
 sys.path.insert(0, os.path.abspath('..'))
 
 
