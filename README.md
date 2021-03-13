@@ -93,7 +93,7 @@ tracker.rank_students()
 |  1 | tom          |   90.09 |      2.0 |
 |  2 | mike         |   88.29 |      3.0 |
 
-5. Lastly, the user is able to find adjusting suggestions by setting `benchmark` of courses, labs, or quizzes of a course, such that the final grades meet or exceed these bencmarks.
+5. Lastly, based on function `suggest_grade_adjustment()`, the user is able to find adjusting suggestions by setting `benchmark` of courses, labs, or quizzes of a course, such that the final grades meet or exceed these bencmarks.
 
 ```python
 # calculates the adjustment for a course for a specified benchmark 
