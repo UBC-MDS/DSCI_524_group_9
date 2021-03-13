@@ -1,6 +1,6 @@
 # pygtracker 
 
-![](https://github.com/UBC-MDS/pygtracker/workflows/build/badge.svg) [![codecov](https://codecov.io/gh/UBC-MDS/pygtracker/branch/main/graph/badge.svg)](https://codecov.io/gh/UBC-MDS/pygtracker) ![Release](https://github.com/UBC-MDS/pygtracker/workflows/Release/badge.svg) [![Documentation Status](https://readthedocs.org/projects/pygtracker/badge/?version=latest)](https://pygtracker.readthedocs.io/en/latest/?badge=latest)
+![](https://github.com/UBC-MDS/pygtracker/workflows/build/badge.svg) [![codecov](https://codecov.io/gh/UBC-MDS/pygtracker/branch/main/graph/badge.svg)](https://codecov.io/gh/UBC-MDS/pygtracker)[![Deploy](https://github.com/UBC-MDS/pygtracker/actions/workflows/deploy.yml/badge.svg)](https://github.com/UBC-MDS/pygtracker/actions/workflows/deploy.yml)[![Documentation Status](https://readthedocs.org/projects/pygtracker/badge/?version=latest)](https://pygtracker.readthedocs.io/en/latest/?badge=latest)
 
 ## Package Overview
 `pygtracker` is a Python package that allows UBC MDS lecturers to record, analyze and adjust grades for students in a particular program. Users can record grades from each course, generate a summary report to determine which class is more challenging than the rest, or identify students who may need help. Finally, the package can suggest ways to adjust the grades for students to ensure the average grades match predefined benchmarks. 
@@ -31,7 +31,8 @@ The main components of this package are:
 ## Installation
 
 ```bash
-$ pip install -i https://test.pypi.org/simple/ pygtracker
+$ pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pygtracker
+
 ```
 
 ## Dependencies
@@ -41,6 +42,8 @@ $ pip install -i https://test.pypi.org/simple/ pygtracker
 ## Usage
 
 A [toy dataset](https://github.com/UBC-MDS/pygtracker/tree/main/tests/test_data) is used to showcase the usage of the functions. Any csv file containing the grades and courses for the UBC MDS program may be used. 
+
+1. you will need to import the `pygtracker` package, create an instance of the class, and store `courses`, `grades` as data frames by function `register_courses()` and `record_grades()`.
 
 ```python
 # import packages 
@@ -58,6 +61,7 @@ grades = pd.read_csv(os.path.join(".", "tests", "test_data", "student_info.csv")
 tracker.register_courses(courses)
 tracker.record_grades(grades)
 ```
+2. By specifying a list of courses, function `generate_course_statistics()` would allow you to create a data frame with summary statistics, including `mean`, `1st-quantile`, `median` and `3rd-quantile` of grades so far.
 
 ```python
 # generates a dataframe with summary statistics for a specified course 
@@ -66,6 +70,8 @@ tracker.generate_course_statistics(["511"])
 |    |   course_id |   mean |   1st-quantile |   median |   3rd-quantile |
 |---:|------------:|-------:|---------------:|---------:|---------------:|
 |  0 |         511 |  87.87 |          86.91 |       88 |          88.96 |
+
+3. Function `rank_courses()` generates a data frame of course ranking based on specified `method` (default is `mean`) in descending order by default. This would allow the user to find which course students perform better and which they may struggle with so far.
 
 ```python
 # generates a dataframe for course ranking by grade 
@@ -76,6 +82,8 @@ tracker.rank_courses()
 |  0 |         522 |   91.29 |
 |  1 |         511 |   87.87 |
 
+4. To look into more details on performance of individual students, function `rank_students()` would generate a data frame with student ranking by grades based on specified courses (default is all courses completed so far) in descending order. Thus, the students who may need more help or guidance could be found.
+
 ```python 
 # generates a dataframe with student ranking by grade 
 tracker.rank_students()
@@ -85,6 +93,8 @@ tracker.rank_students()
 |  0 | joel         |   91.81 |      1.0 |
 |  1 | tom          |   90.09 |      2.0 |
 |  2 | mike         |   88.29 |      3.0 |
+
+5. Lastly, based on function `suggest_grade_adjustment()`, the user is able to find adjusting suggestions by setting `benchmark` of the whole course, labs, or quizzes of that course, such that the final grades meet or exceed these benchmarks.
 
 ```python
 # calculates the adjustment for a course for a specified benchmark 
