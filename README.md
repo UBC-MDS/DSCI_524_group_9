@@ -81,7 +81,7 @@ tracker.rank_courses()
 |  0 |         522 |   91.29 |
 |  1 |         511 |   87.87 |
 
-4. To look into more details on performance of individual students, function `rank_students()` would generate a data fram with student ranking by grades based on specified courses (default is all courses completed so far) in descending order. Thus, the students who may need more help or guidance could be found.
+4. To look into more details on performance of individual students, function `rank_students()` would generate a data frame with student ranking by grades based on specified courses (default is all courses completed so far) in descending order. Thus, the students who may need more help or guidance could be found.
 
 ```python 
 # generates a dataframe with student ranking by grade 
