@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "pygtracker"
-version = "0.1.5"
+version = "0.1.6"
 description = "This is a python package for mds grade tracking and management."
 authors = ["Javairia Raza, Jianru Deng, Tran Doan Khanh Vu, Yanhua Chen"]
 license = "MIT"
