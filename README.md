@@ -60,7 +60,7 @@ grades = pd.read_csv(os.path.join(".", "tests", "test_data", "student_info.csv")
 tracker.register_courses(courses)
 tracker.record_grades(grades)
 ```
-2. By specifying a list of courses, function `generate_course_statistics()` would allow you create a data frame with summary statistics, including `mean`, `1st-quantile`, `median` and `3rd-quantile` of grades so far.
+2. By specifying a list of courses, function `generate_course_statistics()` would allow you to create a data frame with summary statistics, including `mean`, `1st-quantile`, `median` and `3rd-quantile` of grades so far.
 
 ```python
 # generates a dataframe with summary statistics for a specified course 
