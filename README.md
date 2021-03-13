@@ -70,7 +70,7 @@ tracker.generate_course_statistics(["511"])
 |---:|------------:|-------:|---------------:|---------:|---------------:|
 |  0 |         511 |  87.87 |          86.91 |       88 |          88.96 |
 
-3. Function `rank_courses()` generates a data frame of course ranking based on specified `method` (default is `mean`) in descending order by default. This would allow the user find which course students perform better and which they may struggle with so far.
+3. Function `rank_courses()` generates a data frame of course ranking based on specified `method` (default is `mean`) in descending order by default. This would allow the user to find which course students perform better and which they may struggle with so far.
 
 ```python
 # generates a dataframe for course ranking by grade 
