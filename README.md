@@ -31,7 +31,8 @@ The main components of this package are:
 ## Installation
 
 ```bash
-$ pip install -i https://test.pypi.org/simple/ pygtracker
+$ pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple pygtracker
+
 ```
 
 ## Dependencies
